@@ -136,8 +136,7 @@ dependencies = [
 [[package]]
 name = "async-h1"
 version = "2.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5c68a75f812ff0f299e142c06dd0c34e3295a594d935e61eeb6c77041d1d4dc"
+source = "git+https://github.com/http-rs/async-h1?branch=main#54d8b679885e82be78c31e29533fbd8a1d307ab6"
 dependencies = [
  "async-channel",
  "async-dup",
@@ -649,12 +648,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "futures"
+version = "0.3.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "da9052a1a50244d8d5aa9bf55cbc2fb6f357c86cc52e46c62ed390a7180cf150"
+dependencies = [
+ "futures-channel",
+ "futures-core",
+ "futures-executor",
+ "futures-io",
+ "futures-sink",
+ "futures-task",
+ "futures-util",
+]
+
+[[package]]
 name = "futures-channel"
 version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2d31b7ec7efab6eefc7c57233bb10b847986139d88cc2f5a02a1ae6871a1846"
 dependencies = [
  "futures-core",
+ "futures-sink",
 ]
 
 [[package]]
@@ -662,6 +677,17 @@ name = "futures-core"
 version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "79e5145dde8da7d1b3892dad07a9c98fc04bc39892b1ecc9692cf53e2b780a65"
+
+[[package]]
+name = "futures-executor"
+version = "0.3.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9e59fdc009a4b3096bf94f740a0f2424c082521f20a9b08c5c07c48d90fd9b9"
+dependencies = [
+ "futures-core",
+ "futures-task",
+ "futures-util",
+]
 
 [[package]]
 name = "futures-io"
@@ -717,10 +743,13 @@ version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "632a8cd0f2a4b3fdea1657f08bde063848c3bd00f9bbf6e256b8be78802e624b"
 dependencies = [
+ "futures-channel",
  "futures-core",
+ "futures-io",
  "futures-macro",
  "futures-sink",
  "futures-task",
+ "memchr",
  "pin-project-lite 0.2.4",
  "pin-utils",
  "proc-macro-hack",
@@ -1258,8 +1287,10 @@ name = "server"
 version = "0.1.0"
 dependencies = [
  "async-std",
+ "futures",
  "serde",
- "tide 0.16.0",
+ "serde_json",
+ "tide",
  "tide-websockets",
 ]
 
@@ -1438,32 +1469,8 @@ dependencies = [
 
 [[package]]
 name = "tide"
-version = "0.15.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8889753e7e7b9d1ceb7a67e7df8c3994b4657082219d78eb379f71fe2934e66b"
-dependencies = [
- "async-h1",
- "async-session",
- "async-sse",
- "async-std",
- "async-trait",
- "femme",
- "futures-util",
- "http-client",
- "http-types",
- "kv-log-macro",
- "log",
- "pin-project-lite 0.1.11",
- "route-recognizer",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "tide"
 version = "0.16.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c459573f0dd2cc734b539047f57489ea875af8ee950860ded20cf93a79a1dee0"
+source = "git+https://github.com/bnjbvr/tide?branch=use-async-h1-main#a0874e6f498b67ce33d6b2df8de061652f21e638"
 dependencies = [
  "async-h1",
  "async-session",
@@ -1485,8 +1492,7 @@ dependencies = [
 [[package]]
 name = "tide-websockets"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4aee1eac9c3385cd9fe60de592b84f89b5c57f711da604128b9c1ea3377d072c"
+source = "git+https://github.com/bnjbvr/tide-websockets?branch=use-bnjbvr-tide#a5707792214ea77ae6b9e8883d30352f59d1693a"
 dependencies = [
  "async-dup",
  "async-std",
@@ -1497,7 +1503,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha-1",
- "tide 0.15.1",
+ "tide",
 ]
 
 [[package]]

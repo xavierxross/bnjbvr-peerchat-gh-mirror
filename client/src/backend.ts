@@ -1,5 +1,6 @@
 // TODO v
-const API_BASE = "http://127.0.0.1:8080/api";
+const API_DOMAIN = "127.0.0.1:8080";
+const API_BASE = `http://${API_DOMAIN}/api`;
 
 export async function fetchRoomId(url: string): Promise<number> {
     let response = await fetch(API_BASE + "/room/id", {
@@ -24,4 +25,8 @@ export async function fetchRoomUrl(id: number): Promise<string> {
         throw new Error("Backend error: " + json.msg);
     }
     return json.value;
+}
+
+export function chatWebsocket(roomId: number) {
+    return new WebSocket(`ws://${API_DOMAIN}/api/chat/${roomId}`);
 }

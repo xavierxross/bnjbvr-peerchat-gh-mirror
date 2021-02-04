@@ -4213,7 +4213,8 @@ var app = (function () {
     const peertubeUrl = writable(initialUrl);
 
     // TODO v
-    const API_BASE = "http://127.0.0.1:8080/api";
+    const API_DOMAIN = "127.0.0.1:8080";
+    const API_BASE = `http://${API_DOMAIN}/api`;
     async function fetchRoomId(url) {
         let response = await fetch(API_BASE + "/room/id", {
             method: 'post',
@@ -4237,6 +4238,16 @@ var app = (function () {
         }
         return json.value;
     }
+    function chatWebsocket(roomId) {
+        return new WebSocket(`ws://${API_DOMAIN}/api/chat/${roomId}`);
+    }
+
+    var backend = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        fetchRoomId: fetchRoomId,
+        fetchRoomUrl: fetchRoomUrl,
+        chatWebsocket: chatWebsocket
+    });
 
     // Local cache for room/url mappings.
     const ROOM_TO_URL = {};
@@ -4618,23 +4629,23 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[24] = list[i];
+    	child_ctx[20] = list[i];
     	return child_ctx;
     }
 
-    // (138:8) {#each messages as msg}
+    // (86:8) {#each messages as msg}
     function create_each_block$1(ctx) {
     	let li;
     	let strong;
-    	let t0_value = /*displayTime*/ ctx[5](/*msg*/ ctx[24].time) + "";
+    	let t0_value = /*displayTime*/ ctx[4](/*msg*/ ctx[20].time) + "";
     	let t0;
     	let t1;
     	let span;
-    	let t2_value = /*msg*/ ctx[24].author + "";
+    	let t2_value = /*msg*/ ctx[20].author + "";
     	let t2;
     	let span_style_value;
     	let t3;
-    	let t4_value = /*msg*/ ctx[24].content + "";
+    	let t4_value = /*msg*/ ctx[20].content + "";
     	let t4;
     	let t5;
 
@@ -4649,11 +4660,11 @@ var app = (function () {
     			t3 = text(": ");
     			t4 = text(t4_value);
     			t5 = space();
-    			add_location(strong, file$7, 139, 16, 4174);
-    			attr_dev(span, "style", span_style_value = /*authorStyle*/ ctx[6](/*msg*/ ctx[24].author));
-    			add_location(span, file$7, 140, 16, 4231);
+    			add_location(strong, file$7, 87, 16, 2296);
+    			attr_dev(span, "style", span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[20].author));
+    			add_location(span, file$7, 88, 16, 2353);
     			attr_dev(li, "class", "svelte-11oe9az");
-    			add_location(li, file$7, 138, 12, 4153);
+    			add_location(li, file$7, 86, 12, 2275);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -4667,14 +4678,14 @@ var app = (function () {
     			append_dev(li, t5);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*messages*/ 2 && t0_value !== (t0_value = /*displayTime*/ ctx[5](/*msg*/ ctx[24].time) + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*messages*/ 2 && t2_value !== (t2_value = /*msg*/ ctx[24].author + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*messages*/ 1 && t0_value !== (t0_value = /*displayTime*/ ctx[4](/*msg*/ ctx[20].time) + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*messages*/ 1 && t2_value !== (t2_value = /*msg*/ ctx[20].author + "")) set_data_dev(t2, t2_value);
 
-    			if (dirty & /*messages*/ 2 && span_style_value !== (span_style_value = /*authorStyle*/ ctx[6](/*msg*/ ctx[24].author))) {
+    			if (dirty & /*messages*/ 1 && span_style_value !== (span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[20].author))) {
     				attr_dev(span, "style", span_style_value);
     			}
 
-    			if (dirty & /*messages*/ 2 && t4_value !== (t4_value = /*msg*/ ctx[24].content + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*messages*/ 1 && t4_value !== (t4_value = /*msg*/ ctx[20].content + "")) set_data_dev(t4, t4_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(li);
@@ -4685,7 +4696,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(138:8) {#each messages as msg}",
+    		source: "(86:8) {#each messages as msg}",
     		ctx
     	});
 
@@ -4695,14 +4706,12 @@ var app = (function () {
     function create_fragment$7(ctx) {
     	let div;
     	let ul;
-    	let t0;
+    	let t;
     	let form;
-    	let button;
-    	let t2;
     	let input;
     	let mounted;
     	let dispose;
-    	let each_value = /*messages*/ ctx[1];
+    	let each_value = /*messages*/ ctx[0];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -4719,23 +4728,19 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			t0 = space();
+    			t = space();
     			form = element("form");
-    			button = element("button");
-    			button.textContent = "Stop";
-    			t2 = space();
     			input = element("input");
     			attr_dev(ul, "class", "comments svelte-11oe9az");
-    			add_location(ul, file$7, 136, 4, 4070);
-    			add_location(button, file$7, 146, 8, 4420);
+    			add_location(ul, file$7, 84, 4, 2184);
     			attr_dev(input, "type", "text");
-    			attr_dev(input, "style", /*formStyle*/ ctx[4]);
+    			attr_dev(input, "style", /*formStyle*/ ctx[3]);
     			attr_dev(input, "class", "svelte-11oe9az");
-    			add_location(input, file$7, 148, 8, 4494);
+    			add_location(input, file$7, 94, 8, 2542);
     			attr_dev(form, "class", "form svelte-11oe9az");
-    			add_location(form, file$7, 145, 4, 4353);
+    			add_location(form, file$7, 93, 4, 2475);
     			attr_dev(div, "class", "comments-container svelte-11oe9az");
-    			add_location(div, file$7, 135, 0, 4033);
+    			add_location(div, file$7, 83, 0, 2147);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4748,27 +4753,24 @@ var app = (function () {
     				each_blocks[i].m(ul, null);
     			}
 
-    			/*ul_binding*/ ctx[9](ul);
-    			append_dev(div, t0);
+    			/*ul_binding*/ ctx[8](ul);
+    			append_dev(div, t);
     			append_dev(div, form);
-    			append_dev(form, button);
-    			append_dev(form, t2);
     			append_dev(form, input);
-    			set_input_value(input, /*formComment*/ ctx[3]);
+    			set_input_value(input, /*formComment*/ ctx[2]);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(button, "click", /*click_handler*/ ctx[10], false, false, false),
-    					listen_dev(input, "input", /*input_input_handler*/ ctx[11]),
-    					listen_dev(form, "submit", prevent_default(/*sendMessage*/ ctx[7]), false, true, false)
+    					listen_dev(input, "input", /*input_input_handler*/ ctx[9]),
+    					listen_dev(form, "submit", prevent_default(/*sendMessage*/ ctx[6]), false, true, false)
     				];
 
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*messages, authorStyle, displayTime*/ 98) {
-    				each_value = /*messages*/ ctx[1];
+    			if (dirty & /*messages, authorStyle, displayTime*/ 49) {
+    				each_value = /*messages*/ ctx[0];
     				validate_each_argument(each_value);
     				let i;
 
@@ -4791,12 +4793,12 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty & /*formStyle*/ 16) {
-    				attr_dev(input, "style", /*formStyle*/ ctx[4]);
+    			if (dirty & /*formStyle*/ 8) {
+    				attr_dev(input, "style", /*formStyle*/ ctx[3]);
     			}
 
-    			if (dirty & /*formComment*/ 8 && input.value !== /*formComment*/ ctx[3]) {
-    				set_input_value(input, /*formComment*/ ctx[3]);
+    			if (dirty & /*formComment*/ 4 && input.value !== /*formComment*/ ctx[2]) {
+    				set_input_value(input, /*formComment*/ ctx[2]);
     			}
     		},
     		i: noop,
@@ -4804,7 +4806,7 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
     			destroy_each(each_blocks, detaching);
-    			/*ul_binding*/ ctx[9](null);
+    			/*ul_binding*/ ctx[8](null);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -4821,146 +4823,46 @@ var app = (function () {
     	return block;
     }
 
-    function sendMessageToServer(author, comment) {
-    	return new Promise(ok => setTimeout(
-    			() => ok({
-    				time: Date.now(),
-    				author,
-    				content: comment
-    			}),
-    			1000
-    		));
-    }
-
     function instance$7($$self, $$props, $$invalidate) {
     	let $nickname;
     	validate_store(nickname, "nickname");
-    	component_subscribe($$self, nickname, $$value => $$invalidate(15, $nickname = $$value));
+    	component_subscribe($$self, nickname, $$value => $$invalidate(14, $nickname = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Comments", slots, []);
-
-    	var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
-    		function adopt(value) {
-    			return value instanceof P
-    			? value
-    			: new P(function (resolve) {
-    						resolve(value);
-    					});
-    		}
-
-    		return new (P || (P = Promise))(function (resolve, reject) {
-    				function fulfilled(value) {
-    					try {
-    						step(generator.next(value));
-    					} catch(e) {
-    						reject(e);
-    					}
-    				}
-
-    				function rejected(value) {
-    					try {
-    						step(generator["throw"](value));
-    					} catch(e) {
-    						reject(e);
-    					}
-    				}
-
-    				function step(result) {
-    					result.done
-    					? resolve(result.value)
-    					: adopt(result.value).then(fulfilled, rejected);
-    				}
-
-    				step((generator = generator.apply(thisArg, _arguments || [])).next());
-    			});
-    	};
-
     	let { roomId = null } = $$props;
-
-    	// TODO stub messages
-    	let fakeMessages = [
-    		{
-    			time: Date.now() - 5000,
-    			author: "Jean-Jacques",
-    			content: "C'est vrai !"
-    		},
-    		{
-    			time: Date.now() - 3000,
-    			author: "Marie-Yvonne",
-    			content: "Il a raison !!"
-    		},
-    		{
-    			time: Date.now() - 1000,
-    			author: "FosseSceptique",
-    			content: "Sources??"
-    		},
-    		{
-    			time: Date.now() - 500,
-    			author: "stonks",
-    			content: "buy $gme"
-    		},
-    		{
-    			time: Date.now() + 500,
-    			author: "Georges",
-    			content: "J'ai connu un mec de droite une fois, il avait dix fois plus de classe"
-    		},
-    		{
-    			time: Date.now() + 1000,
-    			author: "ChefIndien69",
-    			content: "Qu'est-ce que j'ai avoir avec Georges ? Rien en fait !"
-    		}
-    	];
-
-    	function fetchMessages() {
-    		return new Promise(ok => {
-    				setTimeout(
-    					() => {
-    						ok(fakeMessages);
-    					},
-    					1000
-    				);
-    			});
-    	}
-
-    	let stopFakeComments = false;
-
-    	function generateNewFake() {
-    		let randomId = Math.random() * messages.length | 0;
-    		let randomId2 = Math.random() * messages.length | 0;
-
-    		let randomMessage = {
-    			time: Date.now(),
-    			author: messages[randomId].author,
-    			content: messages[randomId2].content
-    		};
-
-    		onNewMessage(randomMessage);
-    		let nextMsgIn = Math.random() * 2000;
-
-    		if (!stopFakeComments) {
-    			setTimeout(generateNewFake, nextMsgIn);
-    		}
-    	}
-
-    	setTimeout(generateNewFake, 1500);
-
-    	// end of stub messages
     	let messages = [];
+    	let commentsList;
+    	let ws;
+    	let autoscroll = false;
+    	let formComment = "";
+    	let formStyle = "";
 
-    	let list;
+    	onMount(() => {
+    		ws = chatWebsocket(roomId);
+    		ws.addEventListener("message", onNewWsEvent);
 
-    	onMount(() => __awaiter(void 0, void 0, void 0, function* () {
-    		$$invalidate(1, messages = yield fetchMessages());
-    	}));
+    		ws.addEventListener("error", err => {
+    			toast.push("Connexion au chat perdue: " + err.toString());
+    		});
 
-    	function onNewMessage(message) {
-    		$$invalidate(1, messages = [...messages, message]);
+    		return () => {
+    			ws.close();
+    		};
+    	});
+
+    	function onNewWsEvent(event) {
+    		try {
+    			let msg = JSON.parse(event.data);
+    			$$invalidate(0, messages = [...messages, msg]);
+    		} catch(err) {
+    			toast.push("Contenu malformé sur la ws: " + err.toString());
+    		}
     	}
 
-    	const timeFormat = new Intl.DateTimeFormat("fr", { timeStyle: "medium" });
+    	const TIME_FORMAT = new Intl.DateTimeFormat("fr", { timeStyle: "medium" });
 
     	function displayTime(timestamp) {
-    		return timeFormat.format(new Date(timestamp));
+    		return TIME_FORMAT.format(new Date(timestamp));
     	}
 
     	const AUTHOR_COLORS = {};
@@ -4985,33 +4887,29 @@ var app = (function () {
     		return r;
     	}
 
-    	let autoscroll = false;
-
     	beforeUpdate(() => {
-    		autoscroll = list && list.offsetHeight + list.scrollTop > list.scrollHeight - 20;
+    		autoscroll = commentsList && commentsList.offsetHeight + commentsList.scrollTop > commentsList.scrollHeight - 20;
     	});
 
     	afterUpdate(() => {
-    		if (autoscroll) list.scrollTo(0, list.scrollHeight);
+    		if (autoscroll) commentsList.scrollTo(0, commentsList.scrollHeight);
     	});
 
-    	let formComment = "";
-    	let formStyle = "";
+    	function sendMessageToServer(author, content) {
+    		ws.send(JSON.stringify({ author, content }));
+    	}
 
     	function sendMessage() {
-    		return __awaiter(this, void 0, void 0, function* () {
-    			let comment = formComment;
-    			$$invalidate(3, formComment = "");
+    		let comment = formComment;
+    		$$invalidate(2, formComment = "");
 
-    			try {
-    				$$invalidate(4, formStyle = "waiting");
-    				let msg = yield sendMessageToServer($nickname, comment);
-    				$$invalidate(4, formStyle = "");
-    				onNewMessage(msg);
-    			} catch(err) {
-    				$$invalidate(3, formComment = comment);
-    			}
-    		});
+    		try {
+    			$$invalidate(3, formStyle = "waiting");
+    			sendMessageToServer($nickname, comment);
+    			$$invalidate(3, formStyle = "");
+    		} catch(err) {
+    			$$invalidate(2, formComment = comment);
+    		}
     	}
 
     	const writable_props = ["roomId"];
@@ -5022,62 +4920,56 @@ var app = (function () {
 
     	function ul_binding($$value) {
     		binding_callbacks[$$value ? "unshift" : "push"](() => {
-    			list = $$value;
-    			$$invalidate(2, list);
+    			commentsList = $$value;
+    			$$invalidate(1, commentsList);
     		});
     	}
 
-    	const click_handler = () => $$invalidate(0, stopFakeComments = true);
-
     	function input_input_handler() {
     		formComment = this.value;
-    		$$invalidate(3, formComment);
+    		$$invalidate(2, formComment);
     	}
 
     	$$self.$$set = $$props => {
-    		if ("roomId" in $$props) $$invalidate(8, roomId = $$props.roomId);
+    		if ("roomId" in $$props) $$invalidate(7, roomId = $$props.roomId);
     	};
 
     	$$self.$capture_state = () => ({
-    		__awaiter,
     		afterUpdate,
     		beforeUpdate,
     		onMount,
+    		toast,
     		nickname,
+    		backend,
     		roomId,
-    		fakeMessages,
-    		fetchMessages,
-    		stopFakeComments,
-    		generateNewFake,
     		messages,
-    		list,
-    		onNewMessage,
-    		timeFormat,
+    		commentsList,
+    		ws,
+    		autoscroll,
+    		formComment,
+    		formStyle,
+    		onNewWsEvent,
+    		TIME_FORMAT,
     		displayTime,
     		AUTHOR_COLORS,
     		AVAILABLE_COLORS,
     		nextColor,
     		getNextColor,
     		authorStyle,
-    		autoscroll,
     		sendMessageToServer,
-    		formComment,
-    		formStyle,
     		sendMessage,
     		$nickname
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("__awaiter" in $$props) __awaiter = $$props.__awaiter;
-    		if ("roomId" in $$props) $$invalidate(8, roomId = $$props.roomId);
-    		if ("fakeMessages" in $$props) fakeMessages = $$props.fakeMessages;
-    		if ("stopFakeComments" in $$props) $$invalidate(0, stopFakeComments = $$props.stopFakeComments);
-    		if ("messages" in $$props) $$invalidate(1, messages = $$props.messages);
-    		if ("list" in $$props) $$invalidate(2, list = $$props.list);
-    		if ("nextColor" in $$props) nextColor = $$props.nextColor;
+    		if ("roomId" in $$props) $$invalidate(7, roomId = $$props.roomId);
+    		if ("messages" in $$props) $$invalidate(0, messages = $$props.messages);
+    		if ("commentsList" in $$props) $$invalidate(1, commentsList = $$props.commentsList);
+    		if ("ws" in $$props) ws = $$props.ws;
     		if ("autoscroll" in $$props) autoscroll = $$props.autoscroll;
-    		if ("formComment" in $$props) $$invalidate(3, formComment = $$props.formComment);
-    		if ("formStyle" in $$props) $$invalidate(4, formStyle = $$props.formStyle);
+    		if ("formComment" in $$props) $$invalidate(2, formComment = $$props.formComment);
+    		if ("formStyle" in $$props) $$invalidate(3, formStyle = $$props.formStyle);
+    		if ("nextColor" in $$props) nextColor = $$props.nextColor;
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -5085,9 +4977,8 @@ var app = (function () {
     	}
 
     	return [
-    		stopFakeComments,
     		messages,
-    		list,
+    		commentsList,
     		formComment,
     		formStyle,
     		displayTime,
@@ -5095,7 +4986,6 @@ var app = (function () {
     		sendMessage,
     		roomId,
     		ul_binding,
-    		click_handler,
     		input_input_handler
     	];
     }
@@ -5103,7 +4993,7 @@ var app = (function () {
     class Comments extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { roomId: 8 });
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { roomId: 7 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -5125,7 +5015,7 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file$8 = "src/Room.svelte";
 
-    // (59:0) {:else}
+    // (70:0) {:else}
     function create_else_block$1(ctx) {
     	let div;
     	let iframe;
@@ -5151,9 +5041,9 @@ var app = (function () {
     			if (iframe.src !== (iframe_src_value = /*embedUrl*/ ctx[2])) attr_dev(iframe, "src", iframe_src_value);
     			attr_dev(iframe, "frameborder", "0");
     			iframe.allowFullscreen = true;
-    			add_location(iframe, file$8, 60, 8, 2108);
+    			add_location(iframe, file$8, 71, 8, 2400);
     			attr_dev(div, "class", "flex svelte-92rrcw");
-    			add_location(div, file$8, 59, 4, 2081);
+    			add_location(div, file$8, 70, 4, 2373);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5194,14 +5084,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(59:0) {:else}",
+    		source: "(70:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (57:0) {#if embedUrl === null}
+    // (68:0) {#if embedUrl === null}
     function create_if_block$4(ctx) {
     	let t;
 
@@ -5224,7 +5114,7 @@ var app = (function () {
     		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(57:0) {#if embedUrl === null}",
+    		source: "(68:0) {#if embedUrl === null}",
     		ctx
     	});
 
@@ -5273,11 +5163,11 @@ var app = (function () {
     			t6 = space();
     			if_block.c();
     			if_block_anchor = empty();
-    			add_location(h1, file$8, 44, 0, 1735);
+    			add_location(h1, file$8, 55, 0, 2027);
     			attr_dev(input, "type", "text");
     			input.value = window.location.toString();
-    			add_location(input, file$8, 48, 25, 1879);
-    			add_location(p, file$8, 46, 0, 1770);
+    			add_location(input, file$8, 59, 25, 2171);
+    			add_location(p, file$8, 57, 0, 2062);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5412,7 +5302,19 @@ var app = (function () {
 
     	onMount(function onMount() {
     		return __awaiter(this, void 0, void 0, function* () {
-    			let urlString = yield getRoomUrl(roomId);
+    			let urlString;
+
+    			try {
+    				urlString = yield getRoomUrl(roomId);
+    			} catch(err) {
+    				toast.push(err.toString(), {
+    					theme: {
+    						"--toastBackground": "#F56565",
+    						"--toastProgressBackground": "#C53030"
+    					}
+    				});
+    			}
+
     			$$invalidate(2, embedUrl = urlString.replace("/watch/", "/embed/"));
     			let url = new URL(urlString);
     			let peertubeId = url.pathname.split("/").pop();

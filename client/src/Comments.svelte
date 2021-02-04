@@ -1,6 +1,8 @@
 <script lang="ts">
     import { afterUpdate, beforeUpdate, onMount } from "svelte";
-    import { nickname } from './stores';
+    import { toast } from "@zerodevx/svelte-toast";
+    import { nickname } from "./stores";
+    import * as backend from "./backend";
 
     export let roomId: number | null = null;
 
@@ -10,86 +12,38 @@
         content: string;
     }
 
-    // TODO stub messages
-    let fakeMessages: Message[] = [
-        {
-            time: Date.now() - 5000,
-            author: "Jean-Jacques",
-            content: "C'est vrai !",
-        },
-        {
-            time: Date.now() - 3000,
-            author: "Marie-Yvonne",
-            content: "Il a raison !!",
-        },
-        {
-            time: Date.now() - 1000,
-            author: "FosseSceptique",
-            content: "Sources??",
-        },
-        {
-            time: Date.now() - 500,
-            author: "stonks",
-            content: "buy $gme",
-        },
-        {
-            time: Date.now() + 500,
-            author: "Georges",
-            content: "J'ai connu un mec de droite une fois, il avait dix fois plus de classe",
-        },
-        {
-            time: Date.now() + 1000,
-            author: "ChefIndien69",
-            content: "Qu'est-ce que j'ai avoir avec Georges ? Rien en fait !",
-        },
-    ];
-
-    function fetchMessages(): Promise<Message[]> {
-        return new Promise((ok) => {
-            setTimeout(() => {
-                ok(fakeMessages);
-            }, 1000);
-        });
-    }
-
-    let stopFakeComments = false;
-
-    function generateNewFake() {
-        let randomId = (Math.random() * messages.length) | 0;
-        let randomId2 = (Math.random() * messages.length) | 0;
-
-        let randomMessage: Message = {
-            time: Date.now(),
-            author: messages[randomId].author,
-            content: messages[randomId2].content,
-        };
-
-        onNewMessage(randomMessage);
-
-        let nextMsgIn = Math.random() * 2000;
-        if (!stopFakeComments) {
-            setTimeout(generateNewFake, nextMsgIn);
-        }
-    }
-    setTimeout(generateNewFake, 1500);
-    // end of stub messages
-
     let messages = [];
-    let list;
+    let commentsList;
+    let ws;
+    let autoscroll: boolean = false;
+    let formComment = "";
+    let formStyle = "";
 
-    onMount(async () => {
-        messages = await fetchMessages();
+    onMount(() => {
+        ws = backend.chatWebsocket(roomId);
+        ws.addEventListener("message", onNewWsEvent);
+        ws.addEventListener("error", (err) => {
+            toast.push("Connexion au chat perdue: " + err.toString());
+        });
+        return () => {
+            ws.close();
+        };
     });
 
-    function onNewMessage(message: Message) {
-        messages = [...messages, message];
+    function onNewWsEvent(event) {
+        try {
+            let msg = JSON.parse(event.data);
+            messages = [...messages, msg];
+        } catch (err) {
+            toast.push("Contenu malformé sur la ws: " + err.toString());
+        }
     }
 
-    const timeFormat = new Intl.DateTimeFormat("fr", {
+    const TIME_FORMAT = new Intl.DateTimeFormat("fr", {
         timeStyle: "medium",
     });
     function displayTime(timestamp: number) {
-        return timeFormat.format(new Date(timestamp));
+        return TIME_FORMAT.format(new Date(timestamp));
     }
 
     const AUTHOR_COLORS = {};
@@ -110,46 +64,34 @@
         return r;
     }
 
-    let autoscroll: boolean = false;
     beforeUpdate(() => {
         autoscroll =
-            list && list.offsetHeight + list.scrollTop > list.scrollHeight - 20;
+            commentsList &&
+            commentsList.offsetHeight + commentsList.scrollTop >
+                commentsList.scrollHeight - 20;
     });
 
     afterUpdate(() => {
-        if (autoscroll) list.scrollTo(0, list.scrollHeight);
+        if (autoscroll) commentsList.scrollTo(0, commentsList.scrollHeight);
     });
 
-    function sendMessageToServer(
-        author: string,
-        comment: string
-    ): Promise<Message> {
-        return new Promise((ok) =>
-            setTimeout(
-                () =>
-                    ok({
-                        time: Date.now(),
-                        author,
-                        content: comment,
-                    }),
-                1000
-            )
+    function sendMessageToServer(author: string, content: string) {
+        ws.send(
+            JSON.stringify({
+                author,
+                content,
+            })
         );
     }
 
-    let formComment = "";
-    let formStyle = "";
-
-    async function sendMessage() {
+    function sendMessage() {
         let comment = formComment;
         formComment = "";
 
         try {
             formStyle = "waiting";
-            let msg = await sendMessageToServer($nickname, comment);
+            sendMessageToServer($nickname, comment);
             formStyle = "";
-
-            onNewMessage(msg);
         } catch (err) {
             formComment = comment;
         }
@@ -157,7 +99,7 @@
 </script>
 
 <div class="comments-container">
-    <ul class="comments" bind:this={list}>
+    <ul class="comments" bind:this={commentsList}>
         {#each messages as msg}
             <li>
                 <strong>{displayTime(msg.time)}</strong>
@@ -167,8 +109,6 @@
     </ul>
 
     <form class="form" on:submit|preventDefault={sendMessage}>
-        <button on:click={() => (stopFakeComments = true)}>Stop</button>
-
         <input type="text" style={formStyle} bind:value={formComment} />
     </form>
 </div>

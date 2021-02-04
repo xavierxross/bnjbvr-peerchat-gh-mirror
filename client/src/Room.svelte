@@ -12,7 +12,17 @@
     let urlField;
 
     onMount(async function onMount() {
-        let urlString = await getRoomUrl(roomId);
+        let urlString;
+        try {
+            urlString = await getRoomUrl(roomId);
+        } catch (err) {
+            toast.push(err.toString(), {
+                theme: {
+                    "--toastBackground": "#F56565",
+                    "--toastProgressBackground": "#C53030",
+                },
+            });
+        }
         embedUrl = urlString.replace("/watch/", "/embed/");
 
         let url = new URL(urlString);
