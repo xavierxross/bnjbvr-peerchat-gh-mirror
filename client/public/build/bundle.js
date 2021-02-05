@@ -4215,9 +4215,9 @@ var app = (function () {
     const initialUrl = "https://aperi.tube/videos/watch/b25d0548-8247-4073-aeac-776ccdfe5a47";
     const peertubeUrl = writable(initialUrl);
 
-    // TODO v
-    const API_DOMAIN = "127.0.0.1:8080";
-    const API_BASE = `http://${API_DOMAIN}/api`;
+    const API_PROTOCOL = window.location.protocol;
+    const API_DOMAIN = window.location.host;
+    const API_BASE = `//${API_DOMAIN}/api`;
     async function fetchRoomId(url) {
         let response = await fetch(API_BASE + "/room/id", {
             method: 'post',
@@ -4242,7 +4242,9 @@ var app = (function () {
         return json.value;
     }
     function chatWebsocket(roomId) {
-        return new WebSocket(`ws://${API_DOMAIN}/api/chat/${roomId}`);
+        let protocol = API_PROTOCOL.startsWith("https") ? "wss" : "ws";
+        let url = `${protocol}://${API_DOMAIN}/api/chat/${roomId}`;
+        return new WebSocket(url);
     }
 
     var backend = /*#__PURE__*/Object.freeze({
@@ -4412,7 +4414,7 @@ var app = (function () {
 
     const file$6 = "src/Home.svelte";
 
-    // (53:4) {#if waitingMsg !== null}
+    // (52:4) {#if waitingMsg !== null}
     function create_if_block$3(ctx) {
     	let div;
     	let t;
@@ -4421,7 +4423,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			t = text(/*waitingMsg*/ ctx[0]);
-    			add_location(div, file$6, 53, 8, 1803);
+    			add_location(div, file$6, 52, 8, 1790);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -4439,7 +4441,7 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(53:4) {#if waitingMsg !== null}",
+    		source: "(52:4) {#if waitingMsg !== null}",
     		ctx
     	});
 
@@ -4494,9 +4496,9 @@ var app = (function () {
     			add_location(div1, file$6, 37, 4, 1476);
     			attr_dev(input1, "type", "submit");
     			input1.value = "Go!";
-    			add_location(input1, file$6, 45, 8, 1628);
+    			add_location(input1, file$6, 44, 8, 1615);
     			attr_dev(div2, "class", "line svelte-7ff0es");
-    			add_location(div2, file$6, 44, 4, 1601);
+    			add_location(div2, file$6, 43, 4, 1588);
     			attr_dev(form, "class", "form svelte-7ff0es");
     			add_location(form, file$6, 29, 0, 1297);
     		},

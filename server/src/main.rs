@@ -3,10 +3,11 @@ use futures::{pin_mut, select, FutureExt};
 use serde::{ser::SerializeStruct, Serialize};
 use std::{
     collections::HashMap,
+    env,
     sync::{Arc, Mutex},
     time::SystemTime,
 };
-use tide::{prelude::*, security::CorsMiddleware, Body, Request};
+use tide::{prelude::*, Body, Request};
 use tide_websockets::{Message as WSMessage, WebSocket, WebSocketConnection};
 
 const DEFAULT_HOST: &'static str = "127.0.0.1";
@@ -47,19 +48,32 @@ type ServerState = Arc<Mutex<ServerStateInner>>;
 async fn main() -> tide::Result<()> {
     let mut app = tide::with_state::<ServerState>(Default::default());
 
-    // TODO For development purposes only :-)
-    app.with(CorsMiddleware::new().allow_origin("*"));
-
     app.at("/api/room/id").post(get_room_id);
     app.at("/api/room/url").post(get_room_url);
     app.at("/api/chat/:id").get(WebSocket::new(chat));
 
-    let host = std::env::var("HOST").unwrap_or(DEFAULT_HOST.to_string());
-    let port: u16 = std::env::var("PORT")
+    // Find where the `client` directory is located, by starting from the current working directory
+    // and going up.
+    let cur_dir = env::current_dir()?;
+    let mut serve_dir = None;
+    for ancestor in cur_dir.ancestors() {
+        let joined = ancestor.join("client").join("public");
+        if joined.exists() {
+            serve_dir = Some(joined)
+        }
+    }
+    let serve_dir = serve_dir.expect("Missing client/public/ directory; did you build the cilent?");
+    app.at("/").serve_dir(serve_dir.clone())?;
+    app.at("/").serve_file(serve_dir.join("index.html"))?;
+
+    let host = env::var("HOST").unwrap_or(DEFAULT_HOST.to_string());
+    let port: u16 = env::var("PORT")
         .ok()
         .and_then(|port: String| port.parse::<u16>().ok())
         .unwrap_or(DEFAULT_PORT);
 
+    println!("Listening on {} on port {}!", host, port);
+    println!("serving assets at {:?}", serve_dir);
     app.listen((host, port)).await?;
     Ok(())
 }
@@ -136,6 +150,7 @@ async fn chat(req: tide::Request<ServerState>, stream: WebSocketConnection) -> t
     Ok(())
 }
 
+/// A full message to be sent back to a client.
 #[derive(Clone, Serialize)]
 struct Message {
     author: String,
@@ -143,6 +158,8 @@ struct Message {
     content: String,
 }
 
+/// A message that's been sent by the websocket client; it doesn't include a timestamp yet, since
+/// we're going to add it ourselves later.
 #[derive(Deserialize)]
 struct PreMessage {
     author: String,
@@ -261,6 +278,7 @@ impl RoomThread {
             };
 
             // number of milliseconds since 1970-01-01.
+            // TODO use a library for this
             let time = SystemTime::now()
                 .duration_since(SystemTime::UNIX_EPOCH)
                 .unwrap()

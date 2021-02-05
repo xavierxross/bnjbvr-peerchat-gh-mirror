@@ -28,8 +28,7 @@
     </div>
 
     <div class="line">
-        <label
-            >Votre surnom :
+        <label>Votre surnom :
             <NicknameField />
         </label>
     </div>
