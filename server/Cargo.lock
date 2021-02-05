@@ -135,8 +135,9 @@ dependencies = [
 
 [[package]]
 name = "async-h1"
-version = "2.3.0"
-source = "git+https://github.com/http-rs/async-h1?branch=main#54d8b679885e82be78c31e29533fbd8a1d307ab6"
+version = "2.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3e9e2a9745d9cd0d92ed7641ce4d07568985762f92633260f0afe8ac7917d9d7"
 dependencies = [
  "async-channel",
  "async-dup",
@@ -1470,7 +1471,8 @@ dependencies = [
 [[package]]
 name = "tide"
 version = "0.16.0"
-source = "git+https://github.com/bnjbvr/tide?branch=use-async-h1-main#a0874e6f498b67ce33d6b2df8de061652f21e638"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c459573f0dd2cc734b539047f57489ea875af8ee950860ded20cf93a79a1dee0"
 dependencies = [
  "async-h1",
  "async-session",
@@ -1491,8 +1493,9 @@ dependencies = [
 
 [[package]]
 name = "tide-websockets"
-version = "0.1.0"
-source = "git+https://github.com/bnjbvr/tide-websockets?branch=use-bnjbvr-tide#a5707792214ea77ae6b9e8883d30352f59d1693a"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ca9eef759bbe19bd62693c01f1ac58207290513096caccafed140dbc81deaa47"
 dependencies = [
  "async-dup",
  "async-std",

@@ -7,9 +7,9 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tide = { git = "https://github.com/bnjbvr/tide", branch="use-async-h1-main" }
+tide = "0.16.0"
 async-std = { version = "1.9.0", features = ["attributes"] }
 serde = { version = "1.0", features = ["derive"] }
-tide-websockets = { git = "https://github.com/bnjbvr/tide-websockets", branch = "use-bnjbvr-tide"}
+tide-websockets = "0.2.0"
 futures = "0.3.12"
 serde_json = "1.0.61"
