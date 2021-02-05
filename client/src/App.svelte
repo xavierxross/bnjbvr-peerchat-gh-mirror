@@ -3,10 +3,9 @@
     import { SvelteToast } from "@zerodevx/svelte-toast";
 
     import Home from "./Home.svelte";
-    import About from "./About.svelte";
     import Room from "./Room.svelte";
 
-    import createHashSource from "./hashHistory.ts";
+    import createHashSource from "./hashHistory";
 
     const hash = createHistory(createHashSource());
 </script>
@@ -20,7 +19,6 @@
     <hr />
 
     <Route path="room/:roomId" component={Room} />
-    <Route path="about" component={About} />
     <Route component={Home} />
 </Router>
 

@@ -117,6 +117,9 @@ var app = (function () {
                 rest[k] = props[k];
         return rest;
     }
+    function null_to_empty(value) {
+        return value == null ? '' : value;
+    }
 
     const is_client = typeof window !== 'undefined';
     let now = is_client
@@ -4274,155 +4277,46 @@ var app = (function () {
         return roomId;
     }
 
-    const file$5 = "src/Home.svelte";
-
-    // (52:4) {#if waitingMsg !== null}
-    function create_if_block$3(ctx) {
-    	let div;
-    	let t;
-
-    	const block = {
-    		c: function create() {
-    			div = element("div");
-    			t = text(/*waitingMsg*/ ctx[0]);
-    			add_location(div, file$5, 52, 8, 1788);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, t);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*waitingMsg*/ 1) set_data_dev(t, /*waitingMsg*/ ctx[0]);
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block$3.name,
-    		type: "if",
-    		source: "(52:4) {#if waitingMsg !== null}",
-    		ctx
-    	});
-
-    	return block;
-    }
+    const file$5 = "src/NicknameField.svelte";
 
     function create_fragment$5(ctx) {
-    	let form;
-    	let div0;
-    	let label0;
-    	let t0;
-    	let input0;
-    	let t1;
-    	let div1;
-    	let label1;
-    	let t2;
-    	let input1;
-    	let t3;
-    	let div2;
-    	let input2;
-    	let t4;
+    	let input;
     	let mounted;
     	let dispose;
-    	let if_block = /*waitingMsg*/ ctx[0] !== null && create_if_block$3(ctx);
 
     	const block = {
     		c: function create() {
-    			form = element("form");
-    			div0 = element("div");
-    			label0 = element("label");
-    			t0 = text("URL Peertube :\n            ");
-    			input0 = element("input");
-    			t1 = space();
-    			div1 = element("div");
-    			label1 = element("label");
-    			t2 = text("Votre surnom :\n            ");
-    			input1 = element("input");
-    			t3 = space();
-    			div2 = element("div");
-    			input2 = element("input");
-    			t4 = space();
-    			if (if_block) if_block.c();
-    			attr_dev(input0, "type", "text");
-    			add_location(input0, file$5, 32, 12, 1353);
-    			add_location(label0, file$5, 30, 8, 1306);
-    			attr_dev(div0, "class", "line svelte-7ff0es");
-    			add_location(div0, file$5, 29, 4, 1279);
-    			attr_dev(input1, "type", "text");
-    			add_location(input1, file$5, 39, 12, 1508);
-    			add_location(label1, file$5, 37, 8, 1461);
-    			attr_dev(div1, "class", "line svelte-7ff0es");
-    			add_location(div1, file$5, 36, 4, 1434);
-    			attr_dev(input2, "type", "submit");
-    			input2.value = "Go!";
-    			add_location(input2, file$5, 44, 8, 1613);
-    			attr_dev(div2, "class", "line svelte-7ff0es");
-    			add_location(div2, file$5, 43, 4, 1586);
-    			attr_dev(form, "class", "form svelte-7ff0es");
-    			add_location(form, file$5, 28, 0, 1255);
+    			input = element("input");
+    			attr_dev(input, "class", "nickname-field");
+    			attr_dev(input, "type", "text");
+    			add_location(input, file$5, 19, 0, 454);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, form, anchor);
-    			append_dev(form, div0);
-    			append_dev(div0, label0);
-    			append_dev(label0, t0);
-    			append_dev(label0, input0);
-    			set_input_value(input0, /*$peertubeUrl*/ ctx[1]);
-    			append_dev(form, t1);
-    			append_dev(form, div1);
-    			append_dev(div1, label1);
-    			append_dev(label1, t2);
-    			append_dev(label1, input1);
-    			set_input_value(input1, /*$nickname*/ ctx[2]);
-    			append_dev(form, t3);
-    			append_dev(form, div2);
-    			append_dev(div2, input2);
-    			append_dev(form, t4);
-    			if (if_block) if_block.m(form, null);
+    			insert_dev(target, input, anchor);
+    			set_input_value(input, /*nickname*/ ctx[0]);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[4]),
-    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[5]),
-    					listen_dev(input2, "click", prevent_default(/*queryServerForRoom*/ ctx[3]), false, true, false)
+    					listen_dev(input, "input", /*input_input_handler*/ ctx[2]),
+    					listen_dev(input, "blur", /*updateNick*/ ctx[1], false, false, false),
+    					listen_dev(input, "keydown", /*keydown_handler*/ ctx[3], false, false, false)
     				];
 
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*$peertubeUrl*/ 2 && input0.value !== /*$peertubeUrl*/ ctx[1]) {
-    				set_input_value(input0, /*$peertubeUrl*/ ctx[1]);
-    			}
-
-    			if (dirty & /*$nickname*/ 4 && input1.value !== /*$nickname*/ ctx[2]) {
-    				set_input_value(input1, /*$nickname*/ ctx[2]);
-    			}
-
-    			if (/*waitingMsg*/ ctx[0] !== null) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
-    				} else {
-    					if_block = create_if_block$3(ctx);
-    					if_block.c();
-    					if_block.m(form, null);
-    				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
+    			if (dirty & /*nickname*/ 1 && input.value !== /*nickname*/ ctx[0]) {
+    				set_input_value(input, /*nickname*/ ctx[0]);
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(form);
-    			if (if_block) if_block.d();
+    			if (detaching) detach_dev(input);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -4440,12 +4334,254 @@ var app = (function () {
     }
 
     function instance$5($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("NicknameField", slots, []);
+
+    	function updateNick() {
+    		let newNick = nickname$1.trim();
+
+    		if (prevNickname !== newNick) {
+    			nickname.set(newNick);
+    		}
+    	}
+
+    	let nickname$1 = "";
+    	let prevNickname = null;
+
+    	let unsubNickname = nickname.subscribe(value => {
+    		$$invalidate(0, nickname$1 = value);
+    		prevNickname = value;
+    	});
+
+    	onDestroy(() => {
+    		unsubNickname();
+    	});
+
+    	const writable_props = [];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<NicknameField> was created with unknown prop '${key}'`);
+    	});
+
+    	function input_input_handler() {
+    		nickname$1 = this.value;
+    		$$invalidate(0, nickname$1);
+    	}
+
+    	const keydown_handler = key => {
+    		if (key.code === "Enter") {
+    			updateNick();
+    		}
+    	};
+
+    	$$self.$capture_state = () => ({
+    		onDestroy,
+    		nicknameStore: nickname,
+    		updateNick,
+    		nickname: nickname$1,
+    		prevNickname,
+    		unsubNickname
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("nickname" in $$props) $$invalidate(0, nickname$1 = $$props.nickname);
+    		if ("prevNickname" in $$props) prevNickname = $$props.prevNickname;
+    		if ("unsubNickname" in $$props) unsubNickname = $$props.unsubNickname;
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [nickname$1, updateNick, input_input_handler, keydown_handler];
+    }
+
+    class NicknameField extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$5, create_fragment$5, safe_not_equal, {});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "NicknameField",
+    			options,
+    			id: create_fragment$5.name
+    		});
+    	}
+    }
+
+    const file$6 = "src/Home.svelte";
+
+    // (53:4) {#if waitingMsg !== null}
+    function create_if_block$3(ctx) {
+    	let div;
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			t = text(/*waitingMsg*/ ctx[0]);
+    			add_location(div, file$6, 53, 8, 1803);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*waitingMsg*/ 1) set_data_dev(t, /*waitingMsg*/ ctx[0]);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$3.name,
+    		type: "if",
+    		source: "(53:4) {#if waitingMsg !== null}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$6(ctx) {
+    	let form;
+    	let div0;
+    	let label0;
+    	let t0;
+    	let input0;
+    	let t1;
+    	let div1;
+    	let label1;
+    	let t2;
+    	let nicknamefield;
+    	let t3;
+    	let div2;
+    	let input1;
+    	let t4;
+    	let current;
+    	let mounted;
+    	let dispose;
+    	nicknamefield = new NicknameField({ $$inline: true });
+    	let if_block = /*waitingMsg*/ ctx[0] !== null && create_if_block$3(ctx);
+
+    	const block = {
+    		c: function create() {
+    			form = element("form");
+    			div0 = element("div");
+    			label0 = element("label");
+    			t0 = text("URL Peertube :\n            ");
+    			input0 = element("input");
+    			t1 = space();
+    			div1 = element("div");
+    			label1 = element("label");
+    			t2 = text("Votre surnom :\n            ");
+    			create_component(nicknamefield.$$.fragment);
+    			t3 = space();
+    			div2 = element("div");
+    			input1 = element("input");
+    			t4 = space();
+    			if (if_block) if_block.c();
+    			attr_dev(input0, "type", "text");
+    			add_location(input0, file$6, 33, 12, 1395);
+    			add_location(label0, file$6, 31, 8, 1348);
+    			attr_dev(div0, "class", "line svelte-7ff0es");
+    			add_location(div0, file$6, 30, 4, 1321);
+    			add_location(label1, file$6, 38, 8, 1503);
+    			attr_dev(div1, "class", "line svelte-7ff0es");
+    			add_location(div1, file$6, 37, 4, 1476);
+    			attr_dev(input1, "type", "submit");
+    			input1.value = "Go!";
+    			add_location(input1, file$6, 45, 8, 1628);
+    			attr_dev(div2, "class", "line svelte-7ff0es");
+    			add_location(div2, file$6, 44, 4, 1601);
+    			attr_dev(form, "class", "form svelte-7ff0es");
+    			add_location(form, file$6, 29, 0, 1297);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, form, anchor);
+    			append_dev(form, div0);
+    			append_dev(div0, label0);
+    			append_dev(label0, t0);
+    			append_dev(label0, input0);
+    			set_input_value(input0, /*$peertubeUrl*/ ctx[1]);
+    			append_dev(form, t1);
+    			append_dev(form, div1);
+    			append_dev(div1, label1);
+    			append_dev(label1, t2);
+    			mount_component(nicknamefield, label1, null);
+    			append_dev(form, t3);
+    			append_dev(form, div2);
+    			append_dev(div2, input1);
+    			append_dev(form, t4);
+    			if (if_block) if_block.m(form, null);
+    			current = true;
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[3]),
+    					listen_dev(input1, "click", prevent_default(/*queryServerForRoom*/ ctx[2]), false, true, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*$peertubeUrl*/ 2 && input0.value !== /*$peertubeUrl*/ ctx[1]) {
+    				set_input_value(input0, /*$peertubeUrl*/ ctx[1]);
+    			}
+
+    			if (/*waitingMsg*/ ctx[0] !== null) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$3(ctx);
+    					if_block.c();
+    					if_block.m(form, null);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(nicknamefield.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(nicknamefield.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(form);
+    			destroy_component(nicknamefield);
+    			if (if_block) if_block.d();
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$6.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$6($$self, $$props, $$invalidate) {
     	let $peertubeUrl;
-    	let $nickname;
     	validate_store(peertubeUrl, "peertubeUrl");
     	component_subscribe($$self, peertubeUrl, $$value => $$invalidate(1, $peertubeUrl = $$value));
-    	validate_store(nickname, "nickname");
-    	component_subscribe($$self, nickname, $$value => $$invalidate(2, $nickname = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Home", slots, []);
 
@@ -4512,22 +4648,16 @@ var app = (function () {
     		peertubeUrl.set($peertubeUrl);
     	}
 
-    	function input1_input_handler() {
-    		$nickname = this.value;
-    		nickname.set($nickname);
-    	}
-
     	$$self.$capture_state = () => ({
     		__awaiter,
     		useNavigate,
-    		nickname,
     		peertubeUrl,
     		getRoomId,
+    		NicknameField,
     		navigate,
     		queryServerForRoom,
     		waitingMsg,
-    		$peertubeUrl,
-    		$nickname
+    		$peertubeUrl
     	});
 
     	$$self.$inject_state = $$props => {
@@ -4539,113 +4669,58 @@ var app = (function () {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [
-    		waitingMsg,
-    		$peertubeUrl,
-    		$nickname,
-    		queryServerForRoom,
-    		input0_input_handler,
-    		input1_input_handler
-    	];
+    	return [waitingMsg, $peertubeUrl, queryServerForRoom, input0_input_handler];
     }
 
     class Home extends SvelteComponentDev {
-    	constructor(options) {
-    		super(options);
-    		init(this, options, instance$5, create_fragment$5, safe_not_equal, {});
-
-    		dispatch_dev("SvelteRegisterComponent", {
-    			component: this,
-    			tagName: "Home",
-    			options,
-    			id: create_fragment$5.name
-    		});
-    	}
-    }
-
-    const file$6 = "src/About.svelte";
-
-    function create_fragment$6(ctx) {
-    	let div;
-
-    	const block = {
-    		c: function create() {
-    			div = element("div");
-    			div.textContent = "Au sujet.";
-    			add_location(div, file$6, 0, 0, 0);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    		},
-    		p: noop,
-    		i: noop,
-    		o: noop,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_fragment$6.name,
-    		type: "component",
-    		source: "",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function instance$6($$self, $$props) {
-    	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("About", slots, []);
-    	const writable_props = [];
-
-    	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<About> was created with unknown prop '${key}'`);
-    	});
-
-    	return [];
-    }
-
-    class About extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
     		init(this, options, instance$6, create_fragment$6, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
-    			tagName: "About",
+    			tagName: "Home",
     			options,
     			id: create_fragment$6.name
     		});
     	}
     }
 
+    var toast$1 = {
+        info(msg, opts) {
+            toast.push(msg, opts);
+        },
+        error(msg) {
+            toast.push(msg, {
+                theme: {
+                    "--toastBackground": "#F56565",
+                    "--toastProgressBackground": "#C53030",
+                },
+            });
+        }
+    };
+
     const file$7 = "src/Comments.svelte";
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[20] = list[i];
+    	child_ctx[24] = list[i];
     	return child_ctx;
     }
 
-    // (86:8) {#each messages as msg}
+    // (133:8) {#each messages as msg}
     function create_each_block$1(ctx) {
     	let li;
     	let strong;
-    	let t0_value = /*displayTime*/ ctx[4](/*msg*/ ctx[20].time) + "";
+    	let t0_value = /*displayTime*/ ctx[4](/*msg*/ ctx[24].time) + "";
     	let t0;
     	let t1;
     	let span;
-    	let t2_value = /*msg*/ ctx[20].author + "";
+    	let t2_value = /*msg*/ ctx[24].author + "";
     	let t2;
     	let span_style_value;
     	let t3;
-    	let t4_value = /*msg*/ ctx[20].content + "";
+    	let t4_value = /*msg*/ ctx[24].content + "";
     	let t4;
     	let t5;
 
@@ -4660,11 +4735,11 @@ var app = (function () {
     			t3 = text(": ");
     			t4 = text(t4_value);
     			t5 = space();
-    			add_location(strong, file$7, 87, 16, 2296);
-    			attr_dev(span, "style", span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[20].author));
-    			add_location(span, file$7, 88, 16, 2353);
-    			attr_dev(li, "class", "svelte-11oe9az");
-    			add_location(li, file$7, 86, 12, 2275);
+    			add_location(strong, file$7, 134, 16, 4290);
+    			attr_dev(span, "style", span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[24].author));
+    			add_location(span, file$7, 135, 16, 4347);
+    			attr_dev(li, "class", "svelte-1qaej");
+    			add_location(li, file$7, 133, 12, 4269);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -4678,14 +4753,14 @@ var app = (function () {
     			append_dev(li, t5);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*messages*/ 1 && t0_value !== (t0_value = /*displayTime*/ ctx[4](/*msg*/ ctx[20].time) + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*messages*/ 1 && t2_value !== (t2_value = /*msg*/ ctx[20].author + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*messages*/ 1 && t0_value !== (t0_value = /*displayTime*/ ctx[4](/*msg*/ ctx[24].time) + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*messages*/ 1 && t2_value !== (t2_value = /*msg*/ ctx[24].author + "")) set_data_dev(t2, t2_value);
 
-    			if (dirty & /*messages*/ 1 && span_style_value !== (span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[20].author))) {
+    			if (dirty & /*messages*/ 1 && span_style_value !== (span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[24].author))) {
     				attr_dev(span, "style", span_style_value);
     			}
 
-    			if (dirty & /*messages*/ 1 && t4_value !== (t4_value = /*msg*/ ctx[20].content + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*messages*/ 1 && t4_value !== (t4_value = /*msg*/ ctx[24].content + "")) set_data_dev(t4, t4_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(li);
@@ -4696,7 +4771,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(86:8) {#each messages as msg}",
+    		source: "(133:8) {#each messages as msg}",
     		ctx
     	});
 
@@ -4706,9 +4781,13 @@ var app = (function () {
     function create_fragment$7(ctx) {
     	let div;
     	let ul;
-    	let t;
+    	let t0;
     	let form;
+    	let nicknamefield;
+    	let t1;
     	let input;
+    	let input_class_value;
+    	let current;
     	let mounted;
     	let dispose;
     	let each_value = /*messages*/ ctx[0];
@@ -4719,6 +4798,8 @@ var app = (function () {
     		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
     	}
 
+    	nicknamefield = new NicknameField({ $$inline: true });
+
     	const block = {
     		c: function create() {
     			div = element("div");
@@ -4728,19 +4809,21 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			t = space();
+    			t0 = space();
     			form = element("form");
+    			create_component(nicknamefield.$$.fragment);
+    			t1 = space();
     			input = element("input");
-    			attr_dev(ul, "class", "comments svelte-11oe9az");
-    			add_location(ul, file$7, 84, 4, 2184);
+    			attr_dev(ul, "class", "comments svelte-1qaej");
+    			add_location(ul, file$7, 131, 4, 4179);
     			attr_dev(input, "type", "text");
-    			attr_dev(input, "style", /*formStyle*/ ctx[3]);
-    			attr_dev(input, "class", "svelte-11oe9az");
-    			add_location(input, file$7, 94, 8, 2542);
-    			attr_dev(form, "class", "form svelte-11oe9az");
-    			add_location(form, file$7, 93, 4, 2475);
-    			attr_dev(div, "class", "comments-container svelte-11oe9az");
-    			add_location(div, file$7, 83, 0, 2147);
+    			attr_dev(input, "class", input_class_value = "" + (null_to_empty(/*formCommentBusy*/ ctx[3] ? "waiting" : "") + " svelte-1qaej"));
+    			input.disabled = /*formCommentBusy*/ ctx[3];
+    			add_location(input, file$7, 142, 8, 4562);
+    			attr_dev(form, "class", "form svelte-1qaej");
+    			add_location(form, file$7, 140, 4, 4469);
+    			attr_dev(div, "class", "comments-container svelte-1qaej");
+    			add_location(div, file$7, 130, 0, 4142);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4754,14 +4837,18 @@ var app = (function () {
     			}
 
     			/*ul_binding*/ ctx[8](ul);
-    			append_dev(div, t);
+    			append_dev(div, t0);
     			append_dev(div, form);
+    			mount_component(nicknamefield, form, null);
+    			append_dev(form, t1);
     			append_dev(form, input);
     			set_input_value(input, /*formComment*/ ctx[2]);
+    			current = true;
 
     			if (!mounted) {
     				dispose = [
     					listen_dev(input, "input", /*input_input_handler*/ ctx[9]),
+    					listen_dev(input, "keydown", /*keydown_handler*/ ctx[10], false, false, false),
     					listen_dev(form, "submit", prevent_default(/*sendMessage*/ ctx[6]), false, true, false)
     				];
 
@@ -4793,20 +4880,32 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty & /*formStyle*/ 8) {
-    				attr_dev(input, "style", /*formStyle*/ ctx[3]);
+    			if (!current || dirty & /*formCommentBusy*/ 8 && input_class_value !== (input_class_value = "" + (null_to_empty(/*formCommentBusy*/ ctx[3] ? "waiting" : "") + " svelte-1qaej"))) {
+    				attr_dev(input, "class", input_class_value);
+    			}
+
+    			if (!current || dirty & /*formCommentBusy*/ 8) {
+    				prop_dev(input, "disabled", /*formCommentBusy*/ ctx[3]);
     			}
 
     			if (dirty & /*formComment*/ 4 && input.value !== /*formComment*/ ctx[2]) {
     				set_input_value(input, /*formComment*/ ctx[2]);
     			}
     		},
-    		i: noop,
-    		o: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(nicknamefield.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(nicknamefield.$$.fragment, local);
+    			current = false;
+    		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
     			destroy_each(each_blocks, detaching);
     			/*ul_binding*/ ctx[8](null);
+    			destroy_component(nicknamefield);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -4824,25 +4923,60 @@ var app = (function () {
     }
 
     function instance$7($$self, $$props, $$invalidate) {
-    	let $nickname;
-    	validate_store(nickname, "nickname");
-    	component_subscribe($$self, nickname, $$value => $$invalidate(14, $nickname = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Comments", slots, []);
+
+    	var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+    		function adopt(value) {
+    			return value instanceof P
+    			? value
+    			: new P(function (resolve) {
+    						resolve(value);
+    					});
+    		}
+
+    		return new (P || (P = Promise))(function (resolve, reject) {
+    				function fulfilled(value) {
+    					try {
+    						step(generator.next(value));
+    					} catch(e) {
+    						reject(e);
+    					}
+    				}
+
+    				function rejected(value) {
+    					try {
+    						step(generator["throw"](value));
+    					} catch(e) {
+    						reject(e);
+    					}
+    				}
+
+    				function step(result) {
+    					result.done
+    					? resolve(result.value)
+    					: adopt(result.value).then(fulfilled, rejected);
+    				}
+
+    				step((generator = generator.apply(thisArg, _arguments || [])).next());
+    			});
+    	};
+
     	let { roomId = null } = $$props;
     	let messages = [];
-    	let commentsList;
+    	let commentList;
     	let ws;
     	let autoscroll = false;
     	let formComment = "";
-    	let formStyle = "";
+    	let formCommentBusy = false;
+    	let nickname$1 = "";
 
     	onMount(() => {
     		ws = chatWebsocket(roomId);
-    		ws.addEventListener("message", onNewWsEvent);
+    		ws.addEventListener("message", onNewMessage);
 
     		ws.addEventListener("error", err => {
-    			toast.push("Connexion au chat perdue: " + err.toString());
+    			toast$1.error("Connexion au chat perdue: " + err.toString());
     		});
 
     		return () => {
@@ -4850,12 +4984,22 @@ var app = (function () {
     		};
     	});
 
-    	function onNewWsEvent(event) {
+    	function onNewMessage(event) {
     		try {
     			let msg = JSON.parse(event.data);
     			$$invalidate(0, messages = [...messages, msg]);
+
+    			// Messages could come in unsorted order.
+    			// TODO consider requiring the server to send them in sorted order.
+    			messages.sort((a, b) => {
+    				let at = a.time;
+    				let bt = b.time;
+    				if (at < bt) return -1;
+    				if (at > bt) return 1;
+    				return 0;
+    			});
     		} catch(err) {
-    			toast.push("Contenu malformé sur la ws: " + err.toString());
+    			toast$1.error("Contenu malformé sur la ws: " + err.toString());
     		}
     	}
 
@@ -4888,11 +5032,11 @@ var app = (function () {
     	}
 
     	beforeUpdate(() => {
-    		autoscroll = commentsList && commentsList.offsetHeight + commentsList.scrollTop > commentsList.scrollHeight - 20;
+    		autoscroll = commentList && commentList.offsetHeight + commentList.scrollTop > commentList.scrollHeight - 20;
     	});
 
     	afterUpdate(() => {
-    		if (autoscroll) commentsList.scrollTo(0, commentsList.scrollHeight);
+    		if (autoscroll) commentList.scrollTo(0, commentList.scrollHeight);
     	});
 
     	function sendMessageToServer(author, content) {
@@ -4900,18 +5044,47 @@ var app = (function () {
     	}
 
     	function sendMessage() {
-    		let comment = formComment;
-    		$$invalidate(2, formComment = "");
+    		return __awaiter(this, void 0, void 0, function* () {
+    			let comment = formComment.trim();
 
-    		try {
-    			$$invalidate(3, formStyle = "waiting");
-    			sendMessageToServer($nickname, comment);
-    			$$invalidate(3, formStyle = "");
-    		} catch(err) {
-    			$$invalidate(2, formComment = comment);
-    		}
+    			if (comment.length === 0) {
+    				return;
+    			}
+
+    			$$invalidate(3, formCommentBusy = true);
+
+    			try {
+    				sendMessageToServer(nickname$1, comment);
+    				$$invalidate(2, formComment = "");
+    			} catch(err) {
+    				toast$1.error("Couldn't send message: " + err.toString());
+    			} finally {
+    				$$invalidate(3, formCommentBusy = false);
+    			}
+    		});
     	}
 
+    	let previousNick = null;
+
+    	const unsubscribeNickname = nickname.subscribe(value => {
+    		nickname$1 = value;
+
+    		if (previousNick !== null) {
+    			for (let m of messages) {
+    				if (m.author === previousNick) {
+    					m.author = value;
+    				}
+    			}
+
+    			$$invalidate(0, messages);
+    			AUTHOR_COLORS[value] = AUTHOR_COLORS[previousNick];
+    			delete AUTHOR_COLORS[previousNick];
+    		}
+
+    		previousNick = value;
+    	});
+
+    	onDestroy(unsubscribeNickname);
     	const writable_props = ["roomId"];
 
     	Object.keys($$props).forEach(key => {
@@ -4920,8 +5093,8 @@ var app = (function () {
 
     	function ul_binding($$value) {
     		binding_callbacks[$$value ? "unshift" : "push"](() => {
-    			commentsList = $$value;
-    			$$invalidate(1, commentsList);
+    			commentList = $$value;
+    			$$invalidate(1, commentList);
     		});
     	}
 
@@ -4930,25 +5103,36 @@ var app = (function () {
     		$$invalidate(2, formComment);
     	}
 
+    	const keydown_handler = event => {
+    		if (event.key === "Enter") {
+    			sendMessage();
+    		}
+    	};
+
     	$$self.$$set = $$props => {
     		if ("roomId" in $$props) $$invalidate(7, roomId = $$props.roomId);
     	};
 
     	$$self.$capture_state = () => ({
+    		__awaiter,
     		afterUpdate,
     		beforeUpdate,
+    		onDestroy,
     		onMount,
-    		toast,
-    		nickname,
+    		tick,
+    		toast: toast$1,
+    		nicknameStore: nickname,
     		backend,
+    		NicknameField,
     		roomId,
     		messages,
-    		commentsList,
+    		commentList,
     		ws,
     		autoscroll,
     		formComment,
-    		formStyle,
-    		onNewWsEvent,
+    		formCommentBusy,
+    		nickname: nickname$1,
+    		onNewMessage,
     		TIME_FORMAT,
     		displayTime,
     		AUTHOR_COLORS,
@@ -4958,18 +5142,22 @@ var app = (function () {
     		authorStyle,
     		sendMessageToServer,
     		sendMessage,
-    		$nickname
+    		previousNick,
+    		unsubscribeNickname
     	});
 
     	$$self.$inject_state = $$props => {
+    		if ("__awaiter" in $$props) __awaiter = $$props.__awaiter;
     		if ("roomId" in $$props) $$invalidate(7, roomId = $$props.roomId);
     		if ("messages" in $$props) $$invalidate(0, messages = $$props.messages);
-    		if ("commentsList" in $$props) $$invalidate(1, commentsList = $$props.commentsList);
+    		if ("commentList" in $$props) $$invalidate(1, commentList = $$props.commentList);
     		if ("ws" in $$props) ws = $$props.ws;
     		if ("autoscroll" in $$props) autoscroll = $$props.autoscroll;
     		if ("formComment" in $$props) $$invalidate(2, formComment = $$props.formComment);
-    		if ("formStyle" in $$props) $$invalidate(3, formStyle = $$props.formStyle);
+    		if ("formCommentBusy" in $$props) $$invalidate(3, formCommentBusy = $$props.formCommentBusy);
+    		if ("nickname" in $$props) nickname$1 = $$props.nickname;
     		if ("nextColor" in $$props) nextColor = $$props.nextColor;
+    		if ("previousNick" in $$props) previousNick = $$props.previousNick;
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -4978,15 +5166,16 @@ var app = (function () {
 
     	return [
     		messages,
-    		commentsList,
+    		commentList,
     		formComment,
-    		formStyle,
+    		formCommentBusy,
     		displayTime,
     		authorStyle,
     		sendMessage,
     		roomId,
     		ul_binding,
-    		input_input_handler
+    		input_input_handler,
+    		keydown_handler
     	];
     }
 
@@ -5015,7 +5204,7 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file$8 = "src/Room.svelte";
 
-    // (70:0) {:else}
+    // (65:0) {:else}
     function create_else_block$1(ctx) {
     	let div;
     	let iframe;
@@ -5041,9 +5230,9 @@ var app = (function () {
     			if (iframe.src !== (iframe_src_value = /*embedUrl*/ ctx[2])) attr_dev(iframe, "src", iframe_src_value);
     			attr_dev(iframe, "frameborder", "0");
     			iframe.allowFullscreen = true;
-    			add_location(iframe, file$8, 71, 8, 2400);
+    			add_location(iframe, file$8, 66, 8, 2209);
     			attr_dev(div, "class", "flex svelte-92rrcw");
-    			add_location(div, file$8, 70, 4, 2373);
+    			add_location(div, file$8, 65, 4, 2182);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5084,14 +5273,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(70:0) {:else}",
+    		source: "(65:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (68:0) {#if embedUrl === null}
+    // (63:0) {#if embedUrl === null}
     function create_if_block$4(ctx) {
     	let t;
 
@@ -5114,7 +5303,7 @@ var app = (function () {
     		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(68:0) {#if embedUrl === null}",
+    		source: "(63:0) {#if embedUrl === null}",
     		ctx
     	});
 
@@ -5163,11 +5352,11 @@ var app = (function () {
     			t6 = space();
     			if_block.c();
     			if_block_anchor = empty();
-    			add_location(h1, file$8, 55, 0, 2027);
+    			add_location(h1, file$8, 50, 0, 1836);
     			attr_dev(input, "type", "text");
     			input.value = window.location.toString();
-    			add_location(input, file$8, 59, 25, 2171);
-    			add_location(p, file$8, 57, 0, 2062);
+    			add_location(input, file$8, 54, 25, 1980);
+    			add_location(p, file$8, 52, 0, 1871);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5307,12 +5496,7 @@ var app = (function () {
     			try {
     				urlString = yield getRoomUrl(roomId);
     			} catch(err) {
-    				toast.push(err.toString(), {
-    					theme: {
-    						"--toastBackground": "#F56565",
-    						"--toastProgressBackground": "#C53030"
-    					}
-    				});
+    				toast$1.error(err.toString());
     			}
 
     			$$invalidate(2, embedUrl = urlString.replace("/watch/", "/embed/"));
@@ -5337,7 +5521,7 @@ var app = (function () {
 
     		urlField.select();
     		document.execCommand("copy");
-    		toast.push("Copié !", { duration: 2000 });
+    		toast$1.info("Copié !", { duration: 2000 });
     	}
 
     	const writable_props = ["roomId"];
@@ -5360,7 +5544,7 @@ var app = (function () {
     	$$self.$capture_state = () => ({
     		__awaiter,
     		onMount,
-    		toast,
+    		toast: toast$1,
     		getRoomUrl,
     		Comments,
     		roomId,
@@ -5482,7 +5666,7 @@ var app = (function () {
 
     const file$9 = "src/App.svelte";
 
-    // (12:8) <Link to="">
+    // (11:8) <Link to="">
     function create_default_slot_2(ctx) {
     	let t;
 
@@ -5502,14 +5686,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_2.name,
     		type: "slot",
-    		source: "(12:8) <Link to=\\\"\\\">",
+    		source: "(11:8) <Link to=\\\"\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (13:8) <Link to="about">
+    // (12:8) <Link to="about">
     function create_default_slot_1(ctx) {
     	let t;
 
@@ -5529,14 +5713,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_1.name,
     		type: "slot",
-    		source: "(13:8) <Link to=\\\"about\\\">",
+    		source: "(12:8) <Link to=\\\"about\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (10:0) <Router history={hash}>
+    // (9:0) <Router history={hash}>
     function create_default_slot$1(ctx) {
     	let nav;
     	let link0;
@@ -5548,8 +5732,6 @@ var app = (function () {
     	let route0;
     	let t3;
     	let route1;
-    	let t4;
-    	let route2;
     	let current;
 
     	link0 = new Link({
@@ -5576,11 +5758,6 @@ var app = (function () {
     		});
 
     	route1 = new Route({
-    			props: { path: "about", component: About },
-    			$$inline: true
-    		});
-
-    	route2 = new Route({
     			props: { component: Home },
     			$$inline: true
     		});
@@ -5597,10 +5774,8 @@ var app = (function () {
     			create_component(route0.$$.fragment);
     			t3 = space();
     			create_component(route1.$$.fragment);
-    			t4 = space();
-    			create_component(route2.$$.fragment);
-    			add_location(nav, file$9, 10, 4, 383);
-    			add_location(hr, file$9, 15, 4, 475);
+    			add_location(nav, file$9, 9, 4, 344);
+    			add_location(hr, file$9, 14, 4, 436);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, nav, anchor);
@@ -5613,8 +5788,6 @@ var app = (function () {
     			mount_component(route0, target, anchor);
     			insert_dev(target, t3, anchor);
     			mount_component(route1, target, anchor);
-    			insert_dev(target, t4, anchor);
-    			mount_component(route2, target, anchor);
     			current = true;
     		},
     		p: function update(ctx, dirty) {
@@ -5639,7 +5812,6 @@ var app = (function () {
     			transition_in(link1.$$.fragment, local);
     			transition_in(route0.$$.fragment, local);
     			transition_in(route1.$$.fragment, local);
-    			transition_in(route2.$$.fragment, local);
     			current = true;
     		},
     		o: function outro(local) {
@@ -5647,7 +5819,6 @@ var app = (function () {
     			transition_out(link1.$$.fragment, local);
     			transition_out(route0.$$.fragment, local);
     			transition_out(route1.$$.fragment, local);
-    			transition_out(route2.$$.fragment, local);
     			current = false;
     		},
     		d: function destroy(detaching) {
@@ -5660,8 +5831,6 @@ var app = (function () {
     			destroy_component(route0, detaching);
     			if (detaching) detach_dev(t3);
     			destroy_component(route1, detaching);
-    			if (detaching) detach_dev(t4);
-    			destroy_component(route2, detaching);
     		}
     	};
 
@@ -5669,7 +5838,7 @@ var app = (function () {
     		block,
     		id: create_default_slot$1.name,
     		type: "slot",
-    		source: "(10:0) <Router history={hash}>",
+    		source: "(9:0) <Router history={hash}>",
     		ctx
     	});
 
@@ -5763,7 +5932,6 @@ var app = (function () {
     		createHistory,
     		SvelteToast,
     		Home,
-    		About,
     		Room,
     		createHashSource,
     		hash

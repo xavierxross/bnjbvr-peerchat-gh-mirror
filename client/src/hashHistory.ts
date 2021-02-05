@@ -1,6 +1,6 @@
 import { createHashHistory } from "history";
 
-function createHashSource(basename: string) {
+function createHashSource(basename?: string) {
     const history = createHashHistory({ basename });
     let listeners = [];
 

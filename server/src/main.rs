@@ -1,8 +1,4 @@
-use async_std::{
-    channel::{self},
-    prelude::*,
-    task,
-};
+use async_std::{channel, prelude::*, task};
 use futures::{pin_mut, select, FutureExt};
 use serde::{ser::SerializeStruct, Serialize};
 use std::{
@@ -12,6 +8,9 @@ use std::{
 };
 use tide::{prelude::*, security::CorsMiddleware, Body, Request};
 use tide_websockets::{Message as WSMessage, WebSocket, WebSocketConnection};
+
+const DEFAULT_HOST: &'static str = "127.0.0.1";
+const DEFAULT_PORT: u16 = 8080;
 
 #[derive(Clone, Default)]
 struct RoomAnnuary {
@@ -55,7 +54,13 @@ async fn main() -> tide::Result<()> {
     app.at("/api/room/url").post(get_room_url);
     app.at("/api/chat/:id").get(WebSocket::new(chat));
 
-    app.listen("127.0.0.1:8080").await?;
+    let host = std::env::var("HOST").unwrap_or(DEFAULT_HOST.to_string());
+    let port: u16 = std::env::var("PORT")
+        .ok()
+        .and_then(|port: String| port.parse::<u16>().ok())
+        .unwrap_or(DEFAULT_PORT);
+
+    app.listen((host, port)).await?;
     Ok(())
 }
 
@@ -106,11 +111,13 @@ async fn get_room_url(mut req: Request<ServerState>) -> tide::Result<Body> {
         );
     };
 
-    let annuary = &req.state().lock().expect("mutex").annuary;
-    let api_result = if let Some(url) = annuary.room_to_url(id) {
-        ApiResult::Ok(url.to_string())
-    } else {
-        ApiResult::Err("unknown room id")
+    let api_result = {
+        let annuary = &req.state().lock().expect("mutex").annuary;
+        if let Some(url) = annuary.room_to_url(id) {
+            ApiResult::Ok(url.to_string())
+        } else {
+            ApiResult::Err("unknown room id")
+        }
     };
     Ok(Body::from_json(&api_result)?)
 }
@@ -126,7 +133,6 @@ async fn chat(req: tide::Request<ServerState>, stream: WebSocketConnection) -> t
     };
 
     RoomThread::handle_ws(req.state(), room_id_num, stream).await?;
-
     Ok(())
 }
 
@@ -163,14 +169,14 @@ impl RoomThread {
                 // Trick: last messages are recorded in json form, to be faster to forward to new
                 // clients.
                 const NUM_LAST_MSGS: usize = 10;
-                let mut last_msgs: Vec<String> = Vec::with_capacity(NUM_LAST_MSGS);
+                let mut last_msgs: Vec<Message> = Vec::with_capacity(NUM_LAST_MSGS);
                 let mut last_msgs_i = 0;
 
                 task::spawn(async move {
                     println!("> new task for room {}!", room_id);
                     let mut streams: Vec<WebSocketConnection> = Vec::new();
 
-                    loop {
+                    'outer: loop {
                         let new_ws = stream_rx.recv().fuse();
                         let new_message = msg_rx.recv().fuse();
 
@@ -181,7 +187,12 @@ impl RoomThread {
                                 if let Ok(stream) = stream_result {
                                     println!("> found new client!");
                                     for msg in &last_msgs {
-                                        let _ = stream.send_string(msg.clone()).await;
+                                        // Don't bother if the ws closes in the middle.
+                                        let json = serde_json::to_string(&msg).unwrap();
+                                        if let Err(_) = stream.send_string(json).await {
+                                            println!("> ws connection dropped while sending previous messages");
+                                            break 'outer;
+                                        }
                                     }
                                     streams.push(stream);
                                 }
@@ -193,12 +204,12 @@ impl RoomThread {
 
                                     let json = serde_json::to_string(&msg).unwrap();
 
-                                    // Add this message to the waiting
+                                    // Add this message to the list of previous messages.
                                     if last_msgs.len() == NUM_LAST_MSGS {
                                         last_msgs_i = (last_msgs_i + 1) % NUM_LAST_MSGS;
-                                        last_msgs[last_msgs_i] = json.clone();
+                                        last_msgs[last_msgs_i] = msg.clone();
                                     } else {
-                                        last_msgs.push(json.clone());
+                                        last_msgs.push(msg.clone());
                                     }
 
                                     let mut then_remove = Vec::new();
@@ -207,13 +218,23 @@ impl RoomThread {
                                             then_remove.push(i);
                                         }
                                     }
+
                                     for &i in then_remove.iter().rev() {
+                                        println!("> ws connection dropped");
                                         streams.remove(i);
                                     }
+
+                                    // Note: if streams.len() is 0 here, then we could abort the
+                                    // task; however this requires the server state to have a
+                                    // static lifetime (so it can be accessed from within the
+                                    // task), or a different communication channel so *something
+                                    // else* can forget about this task. Let this task be dormant
+                                    // instead.
                                 }
                             }
 
                             complete => {
+                                // Both the stream/msg channels have been closed.
                                 break;
                             }
                         }

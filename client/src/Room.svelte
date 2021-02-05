@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { toast } from "@zerodevx/svelte-toast";
+    import toast from './toast';
 
     import { getRoomUrl } from "./room-url.ts";
     import Comments from "./Comments.svelte";
@@ -16,12 +16,7 @@
         try {
             urlString = await getRoomUrl(roomId);
         } catch (err) {
-            toast.push(err.toString(), {
-                theme: {
-                    "--toastBackground": "#F56565",
-                    "--toastProgressBackground": "#C53030",
-                },
-            });
+            toast.error(err.toString());
         }
         embedUrl = urlString.replace("/watch/", "/embed/");
 
@@ -44,7 +39,7 @@
         }
         urlField.select();
         document.execCommand("copy");
-        toast.push("Copié !", { duration: 2000 });
+        toast.info("Copié !", { duration: 2000 });
     }
 </script>
 

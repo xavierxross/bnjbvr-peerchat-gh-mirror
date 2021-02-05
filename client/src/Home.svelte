@@ -1,7 +1,8 @@
 <script lang="ts">
     import { useNavigate } from "svelte-navigator";
-    import { nickname, peertubeUrl } from "./stores";
+    import { peertubeUrl } from "./stores";
     import { getRoomId } from "./room-url";
+    import NicknameField from './NicknameField.svelte';
 
     const navigate = useNavigate();
 
@@ -29,7 +30,7 @@
     <div class="line">
         <label
             >Votre surnom :
-            <input type="text" bind:value={$nickname} />
+            <NicknameField />
         </label>
     </div>
 

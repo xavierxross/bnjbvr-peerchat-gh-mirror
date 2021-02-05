@@ -1,10 +1,21 @@
 <script lang="ts">
-    import { afterUpdate, beforeUpdate, onMount } from "svelte";
-    import { toast } from "@zerodevx/svelte-toast";
-    import { nickname } from "./stores";
+    import { afterUpdate, beforeUpdate, onDestroy, onMount, tick } from "svelte";
+    import toast from "./toast";
+    import { nickname as nicknameStore } from "./stores";
     import * as backend from "./backend";
+    import NicknameField from './NicknameField.svelte';
 
+    // Retrieved from the page URL. Indicates what's the room identifier, used
+    // to fetch the URL if we're landing here from the room URL.
     export let roomId: number | null = null;
+
+    let messages: Message[] = [];
+    let commentList;
+    let ws;
+    let autoscroll: boolean = false;
+    let formComment = "";
+    let formCommentBusy = false;
+    let nickname = "";
 
     interface Message {
         time: number;
@@ -12,30 +23,32 @@
         content: string;
     }
 
-    let messages = [];
-    let commentsList;
-    let ws;
-    let autoscroll: boolean = false;
-    let formComment = "";
-    let formStyle = "";
-
     onMount(() => {
         ws = backend.chatWebsocket(roomId);
-        ws.addEventListener("message", onNewWsEvent);
+        ws.addEventListener("message", onNewMessage);
         ws.addEventListener("error", (err) => {
-            toast.push("Connexion au chat perdue: " + err.toString());
+            toast.error("Connexion au chat perdue: " + err.toString());
         });
         return () => {
             ws.close();
         };
     });
 
-    function onNewWsEvent(event) {
+    function onNewMessage(event) {
         try {
             let msg = JSON.parse(event.data);
             messages = [...messages, msg];
+            // Messages could come in unsorted order.
+            // TODO consider requiring the server to send them in sorted order.
+            messages.sort((a: Message, b: Message) => {
+                let at = a.time;
+                let bt = b.time;
+                if (at < bt) return -1;
+                if (at > bt) return 1;
+                return 0;
+            });
         } catch (err) {
-            toast.push("Contenu malformé sur la ws: " + err.toString());
+            toast.error("Contenu malformé sur la ws: " + err.toString());
         }
     }
 
@@ -46,7 +59,7 @@
         return TIME_FORMAT.format(new Date(timestamp));
     }
 
-    const AUTHOR_COLORS = {};
+    const AUTHOR_COLORS: Record<string, string> = {};
     const AVAILABLE_COLORS = ["#ff0000", "#00ff00", "#0000ff"];
     let nextColor = 0;
     function getNextColor() {
@@ -66,13 +79,13 @@
 
     beforeUpdate(() => {
         autoscroll =
-            commentsList &&
-            commentsList.offsetHeight + commentsList.scrollTop >
-                commentsList.scrollHeight - 20;
+            commentList &&
+            commentList.offsetHeight + commentList.scrollTop >
+                commentList.scrollHeight - 20;
     });
 
     afterUpdate(() => {
-        if (autoscroll) commentsList.scrollTo(0, commentsList.scrollHeight);
+        if (autoscroll) commentList.scrollTo(0, commentList.scrollHeight);
     });
 
     function sendMessageToServer(author: string, content: string) {
@@ -84,22 +97,44 @@
         );
     }
 
-    function sendMessage() {
-        let comment = formComment;
-        formComment = "";
+    async function sendMessage() {
+        let comment = formComment.trim();
+        if (comment.length === 0) {
+            return;
+        }
 
+        formCommentBusy = true;
         try {
-            formStyle = "waiting";
-            sendMessageToServer($nickname, comment);
-            formStyle = "";
+            sendMessageToServer(nickname, comment);
+            formComment = "";
         } catch (err) {
-            formComment = comment;
+            toast.error("Couldn't send message: " + err.toString());
+        } finally {
+            formCommentBusy = false;
         }
     }
+
+    let previousNick: string | null = null;
+    const unsubscribeNickname = nicknameStore.subscribe((value) => {
+        nickname = value;
+        if (previousNick !== null) {
+            for (let m of messages) {
+                if (m.author === previousNick) {
+                    m.author = value;
+                }
+            }
+            messages = messages;
+            AUTHOR_COLORS[value] = AUTHOR_COLORS[previousNick];
+            delete AUTHOR_COLORS[previousNick];
+        }
+        previousNick = value;
+    });
+
+    onDestroy(unsubscribeNickname);
 </script>
 
 <div class="comments-container">
-    <ul class="comments" bind:this={commentsList}>
+    <ul class="comments" bind:this={commentList}>
         {#each messages as msg}
             <li>
                 <strong>{displayTime(msg.time)}</strong>
@@ -109,7 +144,18 @@
     </ul>
 
     <form class="form" on:submit|preventDefault={sendMessage}>
-        <input type="text" style={formStyle} bind:value={formComment} />
+        <NicknameField />
+        <input
+            type="text"
+            class={formCommentBusy?"waiting":""}
+            disabled={formCommentBusy}
+            bind:value={formComment}
+            on:keydown={(event) => {
+                if (event.key === "Enter") {
+                    sendMessage();
+                }
+            }}
+        />
     </form>
 </div>
 
@@ -120,7 +166,7 @@
 
     .comments {
         min-width: 100%;
-        height: 90%;
+        height: calc(100% - 3em);
         overflow-y: scroll;
         padding-left: 0;
         margin: 0;
@@ -131,12 +177,12 @@
     }
 
     .form {
-        height: 10%;
+        height: 3em;
         display: flex;
     }
 
-    .form input {
-        flex: 1 1 80%;
+    .form :global(.nickname-field) {
+        max-width: 10em;
     }
 
     .waiting {
