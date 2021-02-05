@@ -1,0 +1,12 @@
+image: rust:1.49
+
+ci:
+    before_script:
+        - apt-get update && apt-get install -y nodejs npm
+        - cd client && npm install
+        - rustup component add rustfmt
+    script:
+        - cd ../server
+        - cargo fmt --all -- --check
+        - cargo test --all --verbose
+        - cargo build --release
