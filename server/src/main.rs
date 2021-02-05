@@ -1,7 +1,12 @@
 use async_std::{channel, prelude::*, task};
 use futures::{pin_mut, select, FutureExt};
 use serde::{ser::SerializeStruct, Serialize};
-use std::{collections::HashMap, env, sync::{Arc, Mutex}, time::{Duration, SystemTime}};
+use std::{
+    collections::HashMap,
+    env,
+    sync::{Arc, Mutex},
+    time::{Duration, SystemTime},
+};
 use tide::{prelude::*, Body, Request};
 use tide_websockets::{Message as WSMessage, WebSocket, WebSocketConnection};
 
@@ -313,7 +318,7 @@ impl RoomThread {
                     // XXX Hopefully the system does something for us?
                     println!("handling ping");
                 }
-                WSMessage::Pong(_)  => {
+                WSMessage::Pong(_) => {
                     // XXX Hopefully the system does something for us?
                     println!("handling pong");
                 }
