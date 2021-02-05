@@ -82,6 +82,10 @@
         flex: 0 0;
     }
 
+    :global(.comments-container) {
+        flex: 0 0;
+    }
+
     .video {
         flex: 1 1 80%;
     }

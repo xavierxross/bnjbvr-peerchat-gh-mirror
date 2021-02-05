@@ -4706,23 +4706,23 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[24] = list[i];
+    	child_ctx[25] = list[i];
     	return child_ctx;
     }
 
-    // (133:8) {#each messages as msg}
+    // (152:8) {#each messages as msg}
     function create_each_block$1(ctx) {
     	let li;
     	let strong;
-    	let t0_value = /*displayTime*/ ctx[4](/*msg*/ ctx[24].time) + "";
+    	let t0_value = /*displayTime*/ ctx[4](/*msg*/ ctx[25].time) + "";
     	let t0;
     	let t1;
     	let span;
-    	let t2_value = /*msg*/ ctx[24].author + "";
+    	let t2_value = /*msg*/ ctx[25].author + "";
     	let t2;
     	let span_style_value;
     	let t3;
-    	let t4_value = /*msg*/ ctx[24].content + "";
+    	let t4_value = /*msg*/ ctx[25].content + "";
     	let t4;
     	let t5;
 
@@ -4737,11 +4737,11 @@ var app = (function () {
     			t3 = text(": ");
     			t4 = text(t4_value);
     			t5 = space();
-    			add_location(strong, file$7, 134, 16, 4290);
-    			attr_dev(span, "style", span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[24].author));
-    			add_location(span, file$7, 135, 16, 4347);
+    			add_location(strong, file$7, 153, 16, 4917);
+    			attr_dev(span, "style", span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[25].author));
+    			add_location(span, file$7, 154, 16, 4974);
     			attr_dev(li, "class", "svelte-1qaej");
-    			add_location(li, file$7, 133, 12, 4269);
+    			add_location(li, file$7, 152, 12, 4896);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -4755,14 +4755,14 @@ var app = (function () {
     			append_dev(li, t5);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*messages*/ 1 && t0_value !== (t0_value = /*displayTime*/ ctx[4](/*msg*/ ctx[24].time) + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*messages*/ 1 && t2_value !== (t2_value = /*msg*/ ctx[24].author + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*messages*/ 1 && t0_value !== (t0_value = /*displayTime*/ ctx[4](/*msg*/ ctx[25].time) + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*messages*/ 1 && t2_value !== (t2_value = /*msg*/ ctx[25].author + "")) set_data_dev(t2, t2_value);
 
-    			if (dirty & /*messages*/ 1 && span_style_value !== (span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[24].author))) {
+    			if (dirty & /*messages*/ 1 && span_style_value !== (span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[25].author))) {
     				attr_dev(span, "style", span_style_value);
     			}
 
-    			if (dirty & /*messages*/ 1 && t4_value !== (t4_value = /*msg*/ ctx[24].content + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*messages*/ 1 && t4_value !== (t4_value = /*msg*/ ctx[25].content + "")) set_data_dev(t4, t4_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(li);
@@ -4773,7 +4773,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(133:8) {#each messages as msg}",
+    		source: "(152:8) {#each messages as msg}",
     		ctx
     	});
 
@@ -4817,15 +4817,15 @@ var app = (function () {
     			t1 = space();
     			input = element("input");
     			attr_dev(ul, "class", "comments svelte-1qaej");
-    			add_location(ul, file$7, 131, 4, 4179);
+    			add_location(ul, file$7, 150, 4, 4806);
     			attr_dev(input, "type", "text");
     			attr_dev(input, "class", input_class_value = "" + (null_to_empty(/*formCommentBusy*/ ctx[3] ? "waiting" : "") + " svelte-1qaej"));
     			input.disabled = /*formCommentBusy*/ ctx[3];
-    			add_location(input, file$7, 142, 8, 4562);
+    			add_location(input, file$7, 161, 8, 5189);
     			attr_dev(form, "class", "form svelte-1qaej");
-    			add_location(form, file$7, 140, 4, 4469);
+    			add_location(form, file$7, 159, 4, 5096);
     			attr_dev(div, "class", "comments-container svelte-1qaej");
-    			add_location(div, file$7, 130, 0, 4142);
+    			add_location(div, file$7, 149, 0, 4769);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4973,21 +4973,44 @@ var app = (function () {
     	let formCommentBusy = false;
     	let nickname$1 = "";
 
+    	function debug(content) {
+    		toast$1.error("Connexion au chat perdue: " + event.code + ": " + event.reason);
+
+    		onNewMessage({
+    			data: JSON.stringify({
+    				time: Date.now(),
+    				author: "PEERCHAT STATUS",
+    				content
+    			})
+    		});
+    	}
+
     	onMount(() => {
+    		let onClose = function (event) {
+    			debug("Connexion au chat perdue: " + event.code + ": " + event.reason);
+    		};
+
     		ws = chatWebsocket(roomId);
     		ws.addEventListener("message", onNewMessage);
+    		ws.addEventListener("close", onClose);
 
     		ws.addEventListener("error", err => {
-    			toast$1.error("Connexion au chat perdue: " + err.toString());
+    			debug("Connexion au chat perdue: " + err.toString());
     		});
 
     		return () => {
+    			ws.removeEventListener(onClose);
     			ws.close();
     		};
     	});
 
     	function onNewMessage(event) {
     		try {
+    			if (event.data instanceof Blob && event.data.size === 0) {
+    				// An empty ping sent by the server; ignore.
+    				return;
+    			}
+
     			let msg = JSON.parse(event.data);
     			$$invalidate(0, messages = [...messages, msg]);
 
@@ -5134,6 +5157,7 @@ var app = (function () {
     		formComment,
     		formCommentBusy,
     		nickname: nickname$1,
+    		debug,
     		onNewMessage,
     		TIME_FORMAT,
     		displayTime,
@@ -5226,14 +5250,14 @@ var app = (function () {
     			iframe = element("iframe");
     			t = space();
     			create_component(comments.$$.fragment);
-    			attr_dev(iframe, "class", "video svelte-92rrcw");
+    			attr_dev(iframe, "class", "video svelte-16w1bg0");
     			attr_dev(iframe, "title", /*videoTitle*/ ctx[1]);
     			attr_dev(iframe, "sandbox", "allow-same-origin allow-scripts allow-popups");
     			if (iframe.src !== (iframe_src_value = /*embedUrl*/ ctx[2])) attr_dev(iframe, "src", iframe_src_value);
     			attr_dev(iframe, "frameborder", "0");
     			iframe.allowFullscreen = true;
     			add_location(iframe, file$8, 66, 8, 2209);
-    			attr_dev(div, "class", "flex svelte-92rrcw");
+    			attr_dev(div, "class", "flex svelte-16w1bg0");
     			add_location(div, file$8, 65, 4, 2182);
     		},
     		m: function mount(target, anchor) {

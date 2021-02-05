@@ -1,9 +1,15 @@
 <script lang="ts">
-    import { afterUpdate, beforeUpdate, onDestroy, onMount, tick } from "svelte";
+    import {
+        afterUpdate,
+        beforeUpdate,
+        onDestroy,
+        onMount,
+        tick,
+    } from "svelte";
     import toast from "./toast";
     import { nickname as nicknameStore } from "./stores";
     import * as backend from "./backend";
-    import NicknameField from './NicknameField.svelte';
+    import NicknameField from "./NicknameField.svelte";
 
     // Retrieved from the page URL. Indicates what's the room identifier, used
     // to fetch the URL if we're landing here from the room URL.
@@ -23,19 +29,44 @@
         content: string;
     }
 
+    function debug(content: string) {
+        toast.error(
+            "Connexion au chat perdue: " + event.code + ": " + event.reason
+        );
+        onNewMessage({
+            data: JSON.stringify({
+                time: Date.now(),
+                author: "PEERCHAT STATUS",
+                content,
+            }),
+        });
+    }
+
     onMount(() => {
+        let onClose = function (event) {
+            debug(
+                "Connexion au chat perdue: " + event.code + ": " + event.reason
+            );
+        };
         ws = backend.chatWebsocket(roomId);
         ws.addEventListener("message", onNewMessage);
+        ws.addEventListener("close", onClose);
         ws.addEventListener("error", (err) => {
-            toast.error("Connexion au chat perdue: " + err.toString());
+            debug("Connexion au chat perdue: " + err.toString());
         });
         return () => {
+            ws.removeEventListener(onClose);
             ws.close();
         };
     });
 
     function onNewMessage(event) {
         try {
+            if (event.data instanceof Blob && event.data.size === 0) {
+                // An empty ping sent by the server; ignore.
+                return;
+            }
+
             let msg = JSON.parse(event.data);
             messages = [...messages, msg];
             // Messages could come in unsorted order.
@@ -147,7 +178,7 @@
         <NicknameField />
         <input
             type="text"
-            class={formCommentBusy?"waiting":""}
+            class={formCommentBusy ? "waiting" : ""}
             disabled={formCommentBusy}
             bind:value={formComment}
             on:keydown={(event) => {

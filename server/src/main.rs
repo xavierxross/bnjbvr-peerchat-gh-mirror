@@ -1,12 +1,7 @@
 use async_std::{channel, prelude::*, task};
 use futures::{pin_mut, select, FutureExt};
 use serde::{ser::SerializeStruct, Serialize};
-use std::{
-    collections::HashMap,
-    env,
-    sync::{Arc, Mutex},
-    time::SystemTime,
-};
+use std::{collections::HashMap, env, sync::{Arc, Mutex}, time::{Duration, SystemTime}};
 use tide::{prelude::*, Body, Request};
 use tide_websockets::{Message as WSMessage, WebSocket, WebSocketConnection};
 
@@ -269,28 +264,64 @@ impl RoomThread {
 
         stream_tx.send(ws.clone()).await?;
 
-        while let Some(Ok(WSMessage::Text(input))) = ws.next().await {
-            let PreMessage { author, content } = if let Ok(json) = serde_json::from_str(&input) {
-                json
-            } else {
-                println!("malformed ws input: {}", input);
-                continue;
-            };
+        // Ping the client every 50 seconds, to prevent a disconnect from the proxy server, if
+        // there's one. Nginx for instance is configured to close the socket after 60 seconds of
+        // inactivity.
+        let ws_clone = ws.clone();
+        task::spawn(async move {
+            let ws = ws_clone;
+            let empty = Vec::new();
+            loop {
+                task::sleep(Duration::from_secs(50)).await;
+                if let Err(_) = ws.send_bytes(empty.clone()).await {
+                    break;
+                }
+            }
+        });
 
-            // number of milliseconds since 1970-01-01.
-            // TODO use a library for this
-            let time = SystemTime::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap()
-                .as_millis();
+        while let Some(Ok(ws_msg)) = ws.next().await {
+            match ws_msg {
+                WSMessage::Text(input) => {
+                    let PreMessage { author, content } =
+                        if let Ok(json) = serde_json::from_str(&input) {
+                            json
+                        } else {
+                            println!("malformed ws input: {}", input);
+                            continue;
+                        };
 
-            message_tx
-                .send(Message {
-                    author,
-                    time,
-                    content,
-                })
-                .await?;
+                    // number of milliseconds since 1970-01-01.
+                    // TODO use a library for this
+                    let time = SystemTime::now()
+                        .duration_since(SystemTime::UNIX_EPOCH)
+                        .unwrap()
+                        .as_millis();
+
+                    message_tx
+                        .send(Message {
+                            author,
+                            time,
+                            content,
+                        })
+                        .await?;
+                }
+                WSMessage::Binary(_) => {
+                    println!("received binary, uh");
+                    ws.send_string("invalid request".into()).await?;
+                }
+                WSMessage::Ping(_) => {
+                    // XXX Hopefully the system does something for us?
+                    println!("handling ping");
+                }
+                WSMessage::Pong(_)  => {
+                    // XXX Hopefully the system does something for us?
+                    println!("handling pong");
+                }
+                WSMessage::Close(_) => {
+                    println!("ws close");
+                    break;
+                }
+            }
         }
 
         Ok(())
