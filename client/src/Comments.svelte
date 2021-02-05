@@ -55,7 +55,7 @@
             debug("Connexion au chat perdue: " + err.toString());
         });
         return () => {
-            ws.removeEventListener(onClose);
+            ws.removeEventListener("close", onClose);
             ws.close();
         };
     });

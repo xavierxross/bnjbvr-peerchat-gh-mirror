@@ -4737,11 +4737,11 @@ var app = (function () {
     			t3 = text(": ");
     			t4 = text(t4_value);
     			t5 = space();
-    			add_location(strong, file$7, 153, 16, 4917);
+    			add_location(strong, file$7, 153, 16, 4926);
     			attr_dev(span, "style", span_style_value = /*authorStyle*/ ctx[5](/*msg*/ ctx[25].author));
-    			add_location(span, file$7, 154, 16, 4974);
+    			add_location(span, file$7, 154, 16, 4983);
     			attr_dev(li, "class", "svelte-1qaej");
-    			add_location(li, file$7, 152, 12, 4896);
+    			add_location(li, file$7, 152, 12, 4905);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -4817,15 +4817,15 @@ var app = (function () {
     			t1 = space();
     			input = element("input");
     			attr_dev(ul, "class", "comments svelte-1qaej");
-    			add_location(ul, file$7, 150, 4, 4806);
+    			add_location(ul, file$7, 150, 4, 4815);
     			attr_dev(input, "type", "text");
     			attr_dev(input, "class", input_class_value = "" + (null_to_empty(/*formCommentBusy*/ ctx[3] ? "waiting" : "") + " svelte-1qaej"));
     			input.disabled = /*formCommentBusy*/ ctx[3];
-    			add_location(input, file$7, 161, 8, 5189);
+    			add_location(input, file$7, 161, 8, 5198);
     			attr_dev(form, "class", "form svelte-1qaej");
-    			add_location(form, file$7, 159, 4, 5096);
+    			add_location(form, file$7, 159, 4, 5105);
     			attr_dev(div, "class", "comments-container svelte-1qaej");
-    			add_location(div, file$7, 149, 0, 4769);
+    			add_location(div, file$7, 149, 0, 4778);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4999,7 +4999,7 @@ var app = (function () {
     		});
 
     		return () => {
-    			ws.removeEventListener(onClose);
+    			ws.removeEventListener("close", onClose);
     			ws.close();
     		};
     	});
