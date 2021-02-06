@@ -20,6 +20,15 @@
 </script>
 
 <form class="form">
+    <h1>Peerchat</h1>
+
+    <p>
+    Bienvenu sur Peerchat ! Ce site vous permet d'ajouter un chat en temps réel
+    à n'importe quelle vidéo Peertube. Pour cela, vous pouvez entrer l'URL
+    (l'adresse à prendre de la barre d'adresse) dans le champ ci-dessous, vous
+    choisir un pseudo, et commencer à papoter :-)
+    </p>
+
     <div class="line">
         <label
             >URL Peertube :

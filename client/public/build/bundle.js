@@ -4414,7 +4414,7 @@ var app = (function () {
 
     const file$6 = "src/Home.svelte";
 
-    // (52:4) {#if waitingMsg !== null}
+    // (61:4) {#if waitingMsg !== null}
     function create_if_block$3(ctx) {
     	let div;
     	let t;
@@ -4423,7 +4423,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			t = text(/*waitingMsg*/ ctx[0]);
-    			add_location(div, file$6, 52, 8, 1790);
+    			add_location(div, file$6, 61, 8, 2115);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -4441,7 +4441,7 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(52:4) {#if waitingMsg !== null}",
+    		source: "(61:4) {#if waitingMsg !== null}",
     		ctx
     	});
 
@@ -4450,19 +4450,23 @@ var app = (function () {
 
     function create_fragment$6(ctx) {
     	let form;
+    	let h1;
+    	let t1;
+    	let p;
+    	let t3;
     	let div0;
     	let label0;
-    	let t0;
+    	let t4;
     	let input0;
-    	let t1;
+    	let t5;
     	let div1;
     	let label1;
-    	let t2;
+    	let t6;
     	let nicknamefield;
-    	let t3;
+    	let t7;
     	let div2;
     	let input1;
-    	let t4;
+    	let t8;
     	let current;
     	let mounted;
     	let dispose;
@@ -4472,33 +4476,41 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			form = element("form");
+    			h1 = element("h1");
+    			h1.textContent = "Peerchat";
+    			t1 = space();
+    			p = element("p");
+    			p.textContent = "Bienvenu sur Peerchat ! Ce site vous permet d'ajouter un chat en temps réel\n    à n'importe quelle vidéo Peertube. Pour cela, vous pouvez entrer l'URL\n    (l'adresse à prendre de la barre d'adresse) dans le champ ci-dessous, vous\n    choisir un pseudo, et commencer à papoter :-)";
+    			t3 = space();
     			div0 = element("div");
     			label0 = element("label");
-    			t0 = text("URL Peertube :\n            ");
+    			t4 = text("URL Peertube :\n            ");
     			input0 = element("input");
-    			t1 = space();
+    			t5 = space();
     			div1 = element("div");
     			label1 = element("label");
-    			t2 = text("Votre surnom :\n            ");
+    			t6 = text("Votre surnom :\n            ");
     			create_component(nicknamefield.$$.fragment);
-    			t3 = space();
+    			t7 = space();
     			div2 = element("div");
     			input1 = element("input");
-    			t4 = space();
+    			t8 = space();
     			if (if_block) if_block.c();
+    			add_location(h1, file$6, 30, 4, 1321);
+    			add_location(p, file$6, 32, 4, 1344);
     			attr_dev(input0, "type", "text");
-    			add_location(input0, file$6, 33, 12, 1395);
-    			add_location(label0, file$6, 31, 8, 1348);
+    			add_location(input0, file$6, 42, 12, 1720);
+    			add_location(label0, file$6, 40, 8, 1673);
     			attr_dev(div0, "class", "line svelte-7ff0es");
-    			add_location(div0, file$6, 30, 4, 1321);
-    			add_location(label1, file$6, 38, 8, 1503);
+    			add_location(div0, file$6, 39, 4, 1646);
+    			add_location(label1, file$6, 47, 8, 1828);
     			attr_dev(div1, "class", "line svelte-7ff0es");
-    			add_location(div1, file$6, 37, 4, 1476);
+    			add_location(div1, file$6, 46, 4, 1801);
     			attr_dev(input1, "type", "submit");
     			input1.value = "Go!";
-    			add_location(input1, file$6, 44, 8, 1615);
+    			add_location(input1, file$6, 53, 8, 1940);
     			attr_dev(div2, "class", "line svelte-7ff0es");
-    			add_location(div2, file$6, 43, 4, 1588);
+    			add_location(div2, file$6, 52, 4, 1913);
     			attr_dev(form, "class", "form svelte-7ff0es");
     			add_location(form, file$6, 29, 0, 1297);
     		},
@@ -4507,20 +4519,24 @@ var app = (function () {
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, form, anchor);
+    			append_dev(form, h1);
+    			append_dev(form, t1);
+    			append_dev(form, p);
+    			append_dev(form, t3);
     			append_dev(form, div0);
     			append_dev(div0, label0);
-    			append_dev(label0, t0);
+    			append_dev(label0, t4);
     			append_dev(label0, input0);
     			set_input_value(input0, /*$peertubeUrl*/ ctx[1]);
-    			append_dev(form, t1);
+    			append_dev(form, t5);
     			append_dev(form, div1);
     			append_dev(div1, label1);
-    			append_dev(label1, t2);
+    			append_dev(label1, t6);
     			mount_component(nicknamefield, label1, null);
-    			append_dev(form, t3);
+    			append_dev(form, t7);
     			append_dev(form, div2);
     			append_dev(div2, input1);
-    			append_dev(form, t4);
+    			append_dev(form, t8);
     			if (if_block) if_block.m(form, null);
     			current = true;
 
