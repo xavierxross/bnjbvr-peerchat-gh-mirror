@@ -5692,8 +5692,8 @@ var app = (function () {
 
     const file$9 = "src/App.svelte";
 
-    // (11:8) <Link to="">
-    function create_default_slot_2(ctx) {
+    // (11:8) <Link to="/">
+    function create_default_slot_1(ctx) {
     	let t;
 
     	const block = {
@@ -5710,36 +5710,9 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_default_slot_2.name,
-    		type: "slot",
-    		source: "(11:8) <Link to=\\\"\\\">",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (12:8) <Link to="about">
-    function create_default_slot_1(ctx) {
-    	let t;
-
-    	const block = {
-    		c: function create() {
-    			t = text("About");
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, t, anchor);
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(t);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
     		id: create_default_slot_1.name,
     		type: "slot",
-    		source: "(12:8) <Link to=\\\"about\\\">",
+    		source: "(11:8) <Link to=\\\"/\\\">",
     		ctx
     	});
 
@@ -5749,29 +5722,18 @@ var app = (function () {
     // (9:0) <Router history={hash}>
     function create_default_slot$1(ctx) {
     	let nav;
-    	let link0;
+    	let link;
     	let t0;
-    	let link1;
-    	let t1;
     	let hr;
-    	let t2;
+    	let t1;
     	let route0;
-    	let t3;
+    	let t2;
     	let route1;
     	let current;
 
-    	link0 = new Link({
+    	link = new Link({
     			props: {
-    				to: "",
-    				$$slots: { default: [create_default_slot_2] },
-    				$$scope: { ctx }
-    			},
-    			$$inline: true
-    		});
-
-    	link1 = new Link({
-    			props: {
-    				to: "about",
+    				to: "/",
     				$$slots: { default: [create_default_slot_1] },
     				$$scope: { ctx }
     			},
@@ -5779,7 +5741,7 @@ var app = (function () {
     		});
 
     	route0 = new Route({
-    			props: { path: "room/:roomId", component: Room },
+    			props: { path: "/room/:roomId", component: Room },
     			$$inline: true
     		});
 
@@ -5791,71 +5753,57 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			nav = element("nav");
-    			create_component(link0.$$.fragment);
+    			create_component(link.$$.fragment);
     			t0 = space();
-    			create_component(link1.$$.fragment);
-    			t1 = space();
     			hr = element("hr");
-    			t2 = space();
+    			t1 = space();
     			create_component(route0.$$.fragment);
-    			t3 = space();
+    			t2 = space();
     			create_component(route1.$$.fragment);
     			add_location(nav, file$9, 9, 4, 344);
-    			add_location(hr, file$9, 14, 4, 436);
+    			add_location(hr, file$9, 13, 4, 399);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, nav, anchor);
-    			mount_component(link0, nav, null);
-    			append_dev(nav, t0);
-    			mount_component(link1, nav, null);
-    			insert_dev(target, t1, anchor);
+    			mount_component(link, nav, null);
+    			insert_dev(target, t0, anchor);
     			insert_dev(target, hr, anchor);
-    			insert_dev(target, t2, anchor);
+    			insert_dev(target, t1, anchor);
     			mount_component(route0, target, anchor);
-    			insert_dev(target, t3, anchor);
+    			insert_dev(target, t2, anchor);
     			mount_component(route1, target, anchor);
     			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			const link0_changes = {};
+    			const link_changes = {};
 
     			if (dirty & /*$$scope*/ 2) {
-    				link0_changes.$$scope = { dirty, ctx };
+    				link_changes.$$scope = { dirty, ctx };
     			}
 
-    			link0.$set(link0_changes);
-    			const link1_changes = {};
-
-    			if (dirty & /*$$scope*/ 2) {
-    				link1_changes.$$scope = { dirty, ctx };
-    			}
-
-    			link1.$set(link1_changes);
+    			link.$set(link_changes);
     		},
     		i: function intro(local) {
     			if (current) return;
-    			transition_in(link0.$$.fragment, local);
-    			transition_in(link1.$$.fragment, local);
+    			transition_in(link.$$.fragment, local);
     			transition_in(route0.$$.fragment, local);
     			transition_in(route1.$$.fragment, local);
     			current = true;
     		},
     		o: function outro(local) {
-    			transition_out(link0.$$.fragment, local);
-    			transition_out(link1.$$.fragment, local);
+    			transition_out(link.$$.fragment, local);
     			transition_out(route0.$$.fragment, local);
     			transition_out(route1.$$.fragment, local);
     			current = false;
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(nav);
-    			destroy_component(link0);
-    			destroy_component(link1);
-    			if (detaching) detach_dev(t1);
+    			destroy_component(link);
+    			if (detaching) detach_dev(t0);
     			if (detaching) detach_dev(hr);
-    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(t1);
     			destroy_component(route0, detaching);
-    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(t2);
     			destroy_component(route1, detaching);
     		}
     	};

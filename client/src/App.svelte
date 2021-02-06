@@ -12,13 +12,12 @@
 
 <Router history={hash}>
     <nav>
-        <Link to="">Home</Link>
-        <Link to="about">About</Link>
+        <Link to="/">Home</Link>
     </nav>
 
     <hr />
 
-    <Route path="room/:roomId" component={Room} />
+    <Route path="/room/:roomId" component={Room} />
     <Route component={Home} />
 </Router>
 
