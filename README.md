@@ -13,3 +13,8 @@
 ## production
 
 - `cd server && HOST="0.0.0.0" PORT=1337 cargo run --release`
+
+### docker
+
+- `docker build -t bnjbvr/peerchat . && docker run`
+- `docker run --rm -ti -p 8080:8080 bnjbvr/peerchat`
