@@ -2,7 +2,8 @@
     import { useNavigate } from "svelte-navigator";
     import { peertubeUrl } from "./stores";
     import { getRoomId } from "./room-url";
-    import NicknameField from './NicknameField.svelte';
+    import NicknameField from "./NicknameField.svelte";
+    import { _ } from "svelte-i18n";
 
     const navigate = useNavigate();
 
@@ -22,30 +23,23 @@
 <form class="form">
     <h1>Peerchat</h1>
 
-    <p>
-    Bienvenu sur Peerchat ! Ce site vous permet d'ajouter un chat en temps réel
-    à n'importe quelle vidéo Peertube. Pour cela, vous pouvez entrer l'URL
-    (l'adresse à prendre de la barre d'adresse) dans le champ ci-dessous, vous
-    choisir un pseudo, et commencer à papoter :-)
-    </p>
+    <p>{$_("home.welcome")}</p>
 
     <div class="line">
         <label
-            >URL Peertube :
+            >{$_("home.peertube_url")}
             <input type="text" bind:value={$peertubeUrl} />
         </label>
     </div>
 
     <div class="line">
-        <label>Votre surnom :
-            <NicknameField />
-        </label>
+        <label>{$_("home.nickname")} <NicknameField /> </label>
     </div>
 
     <div class="line">
         <input
             type="submit"
-            value="Go!"
+            value={$_('home.start-button')}
             on:click|preventDefault={queryServerForRoom}
         />
     </div>

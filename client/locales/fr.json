@@ -1,0 +1,14 @@
+{
+    "home-link": "Accueil",
+    "source-link": "Code source",
+    "home": {
+        "welcome": "Bienvenu sur Peerchat ! Ce site vous permet d'ajouter un chat en temps réel à n'importe quelle vidéo Peertube. Pour cela, vous pouvez entrer l'URL (l'adresse à prendre de la barre d'adresse) dans le champ ci-dessous, vous choisir un pseudo, et commencer à papoter :-)",
+        "peertube_url": "URL Peertube :",
+        "nickname": "Votre surnom :",
+        "start-button": "C'est parti !"
+    },
+    "room": {
+        "share-url": "Partagez cette URL avec vos ami.e.s pour qu'iels puissent vous rejoindre et discuter avec vous ! ",
+        "copied": "Copié !"
+    }
+}

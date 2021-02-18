@@ -1,0 +1,14 @@
+{
+    "home-link": "Home",
+    "source-link": "Source code",
+    "home": {
+        "welcome": "Welcome to Peerchat! This website allows you to add a real-time chat room to any Peertube video. You may enter the URL from the address bar into the following field, choose a nick name, and start blabbing :-)",
+        "peertube_url": "Peertube URL:",
+        "nickname": "Your nick:",
+        "start-button": "Let's go!"
+    },
+    "room": {
+        "share-url": "Share this URL with your friends so they can join the room and start chatting!",
+        "copied": "Copied!"
+    }
+}

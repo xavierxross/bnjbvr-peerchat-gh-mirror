@@ -1,6 +1,7 @@
 import svelte from 'rollup-plugin-svelte';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
+import json from '@rollup/plugin-json';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
@@ -32,12 +33,13 @@ function serve() {
 }
 
 export default {
+    inlineDynamicImports: true,
     input: 'src/main.ts',
     output: {
         sourcemap: true,
         format: 'iife',
         name: 'app',
-        file: 'public/build/bundle.js'
+        dir: 'public/build/'
     },
     plugins: [
         svelte({
@@ -60,8 +62,10 @@ export default {
             browser: true,
             dedupe: ['svelte']
         }),
+        json(),
         commonjs(),
         typescript({
+            resolveJsonModule: true,
             sourceMap: !production,
             inlineSources: !production
         }),

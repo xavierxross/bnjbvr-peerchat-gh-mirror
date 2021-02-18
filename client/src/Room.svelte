@@ -4,6 +4,7 @@
 
     import { getRoomUrl } from "./room-url.ts";
     import Comments from "./Comments.svelte";
+import { _ } from "svelte-i18n";
 
     export let roomId: number;
 
@@ -39,15 +40,15 @@
         }
         urlField.select();
         document.execCommand("copy");
-        toast.info("Copié !", { duration: 2000 });
+        toast.info($_('room.copied'), { duration: 2000 });
     }
 </script>
 
 <h1>{videoTitle} (#{roomId})</h1>
 
 <p>
-    Partagez cette URL avec vos ami.e.s pour qu'iels puissent vous rejoindre et
-    discuter avec vous ! <input
+    {$_('room.share-url')}
+    <input
         type="text"
         bind:this={urlField}
         on:click={copyUrl}
